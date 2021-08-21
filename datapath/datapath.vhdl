@@ -14,7 +14,7 @@ entity datapath is
         branch_d        : in std_logic;
         alucontrol_d    : in std_logic_vector(2 downto 0);
         alusrc_d        : in std_logic;
-        immsrc_d        : in std_logic;
+        immsrc_d        : in std_logic_vector(1 downto 0);
         --output
         zero            : out std_logic
 
