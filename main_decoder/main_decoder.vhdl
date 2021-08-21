@@ -27,6 +27,7 @@ architecture rtl of main_decoder is
                 when "1100011" => controls <= "01000--1010"; --beq
                 when "0010011" => controls <= "10010000100"; --I-type ALU
                 when "1101111" => controls <= "111-0100--1"; --jal
+                when others    => controls <= "-----------"; --undefined for other cases
             end case;
         end process;
 

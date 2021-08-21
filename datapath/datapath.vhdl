@@ -7,6 +7,7 @@ entity datapath is
         --inputs 
         clk             : in std_logic;
         reset           : in std_logic;
+        pcsrc_e         : in std_logic;
         regwrite_d      : in std_logic;
         resultsrc_d     : in std_logic_vector(1 downto 0);
         memwrite_d      : in std_logic;
@@ -15,8 +16,11 @@ entity datapath is
         alucontrol_d    : in std_logic_vector(2 downto 0);
         alusrc_d        : in std_logic;
         immsrc_d        : in std_logic_vector(1 downto 0);
-        --output
-        zero_e            : out std_logic
+        --outputs
+        instr_d         : buffer std_logic_vector(31 downto 0);
+        zero_e          : out std_logic;
+        jump_e          : out std_logic;
+        branch_e        : out std_logic
 
     );
 end datapath;
@@ -24,14 +28,12 @@ end datapath;
 architecture rtl of datapath is
 
     --internal signals
-    signal pcsrc_e          : std_logic;
     signal pcplus4_f        : std_logic_vector(31 downto 0);
     signal pcplus4_d        : std_logic_vector(31 downto 0);
     signal pctarget_e       : std_logic_vector(31 downto 0);
     signal pcf_in           : std_logic_vector(31 downto 0);
     signal pcf_buf          : std_logic_vector(31 downto 0);
     signal rd_instr         : std_logic_vector(31 downto 0);
-    signal instr_d          : std_logic_vector(31 downto 0);
     signal pc_d             : std_logic_vector(31 downto 0);
     signal rd_d             : std_logic_vector(4 downto 0);
     signal rd_w             : std_logic_vector(4 downto 0);
@@ -43,8 +45,6 @@ architecture rtl of datapath is
     signal regwrite_e       : std_logic;
     signal resultsrc_e      : std_logic_vector(1 downto 0);
     signal memwrite_e       : std_logic;
-    signal jump_e           : std_logic;
-    signal branch_e         : std_logic;
     signal alucontrol_e     : std_logic_vector(2 downto 0);
     signal alusrc_e         : std_logic;
     signal rd2_e            : std_logic_vector(31 downto 0);
@@ -72,6 +72,7 @@ architecture rtl of datapath is
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
+            generic map(32)
             port map(
                 port_in1    => pcplus4_f,
                 port_in2    => pctarget_e,
@@ -111,7 +112,7 @@ architecture rtl of datapath is
                 pc_f        => pcf_buf,
                 pcplus4_f   => pcplus4_f,
                 instr_d     => instr_d,
-                pc_d        => pcf_buf,
+                pc_d        => pc_d,
                 pcplus4_d   => pcplus4_d
             );
 
@@ -168,9 +169,10 @@ architecture rtl of datapath is
                 pcplus4_e       => pcplus4_e
             );
 
-            pcsrc_e <= jump_e or (branch_e and zero_e);
+            
             --instantiation multiplexer 2 to 1
             inst_mux_2 : entity work.mux_2(rtl)
+                generic map(32)
                 port map(
                     port_in1    => rd2_e,
                     port_in2    => immext_e,
@@ -195,7 +197,7 @@ architecture rtl of datapath is
                     Zero            => zero_e,
                     ALUResult       => aluresult
                 );
-        
+            
             --instantiation Register between execute and memory
             writedata_e <= rd2_e;
             inst_reg_em : entity work.reg_em(rtl)
@@ -247,6 +249,7 @@ architecture rtl of datapath is
 
             --instantiation multiplexer 3 to 1
             inst_mux_3 : entity work.mux_3(rtl)
+                generic map(32)
                 port map(
                     port_in1    => aluresult_w, 
                     port_in2    => readdata_w,
