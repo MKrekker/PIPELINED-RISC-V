@@ -4,11 +4,13 @@ use ieee.numeric_std.all;
 
 entity data_memr is
     port(
-        addr_port : in std_logic_vector(31 downto 0);
-        write_data : in std_logic_vector(31 downto 0);
-        clk : in std_logic;
-        write_en : in std_logic;
-        read_data : out std_logic_vector(31 downto 0)
+        --inputs
+        addr_port   : in std_logic_vector(31 downto 0);
+        write_data  : in std_logic_vector(31 downto 0);
+        clk         : in std_logic;
+        write_en    : in std_logic;
+        --output
+        read_data   : out std_logic_vector(31 downto 0)
     );
 end data_memr;
 

@@ -4,11 +4,13 @@ use ieee.numeric_std.all;
 
 entity ALU is
     port(
-        SrcA : in std_logic_vector(31 downto 0);
-        SrcB : in std_logic_vector(31 downto 0);
-        ALUControl : in std_logic_vector(2 downto 0);
-        Zero : out std_logic;
-        ALUResult : buffer std_logic_vector(31 downto 0)
+        --inputs
+        SrcA        : in std_logic_vector(31 downto 0);
+        SrcB        : in std_logic_vector(31 downto 0);
+        ALUControl  : in std_logic_vector(2 downto 0);
+        --outputs
+        Zero        : out std_logic;
+        ALUResult   : buffer std_logic_vector(31 downto 0)
     );
 end ALU;
 

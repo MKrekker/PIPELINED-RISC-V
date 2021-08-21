@@ -4,14 +4,16 @@ use ieee.numeric_std.all;
 
 entity reg_file is
     port(
-        read_port_addr1 : in std_logic_vector(4 downto 0);
-        read_port_addr2 : in std_logic_vector(4 downto 0);
-        write_port_addr : in std_logic_vector(4 downto 0);
-        write_data : in std_logic_vector(31 downto 0);
-        write_en : in std_logic;
-        clk : in std_logic;
-        read_data1 : out std_logic_vector(31 downto 0);
-        read_data2 : buffer std_logic_vector(31 downto 0)
+        --inputs
+        read_port_addr1     : in std_logic_vector(4 downto 0);
+        read_port_addr2     : in std_logic_vector(4 downto 0);
+        write_port_addr     : in std_logic_vector(4 downto 0);
+        write_data          : in std_logic_vector(31 downto 0);
+        write_en            : in std_logic;
+        clk                 : in std_logic;
+        --outputs
+        read_data1          : out std_logic_vector(31 downto 0);
+        read_data2          : buffer std_logic_vector(31 downto 0)
     );
 end reg_file;
 
@@ -21,6 +23,7 @@ architecture rtl of reg_file is
     
     --Note x0 is hardwired to 0
     signal mem_1 : registers :=(others => (others => '0'));
+    
     begin
 
         Write_Data_Proc : process(clk)begin

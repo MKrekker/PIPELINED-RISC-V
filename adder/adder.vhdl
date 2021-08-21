@@ -5,9 +5,11 @@ use ieee.numeric_std.all;
 entity adder is
     generic(numberbits_b : integer := 32);
     port(
-        a_in : in std_logic_vector(31 downto 0);
-        b_in : in std_logic_vector(numberbits_b-1 downto 0);
-        c_out: out std_logic_vector(31 downto 0)
+        --inputs
+        a_in    : in std_logic_vector(31 downto 0);
+        b_in    : in std_logic_vector(numberbits_b-1 downto 0);
+        --output
+        c_out   : out std_logic_vector(31 downto 0)
     );
 end adder;
 

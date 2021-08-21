@@ -3,9 +3,11 @@ use ieee.std_logic_1164.all;
 
 entity pc is
     port(
+        --inputs
         PCNext : in std_logic_vector(31 downto 0);
         clk    : in std_logic;
         reset  : in std_logic;
+        --output
         PC_cur : buffer std_logic_vector(31 downto 0)
     );
 end pc;

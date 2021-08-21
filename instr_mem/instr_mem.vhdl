@@ -4,8 +4,10 @@ use ieee.numeric_std.all;
 
 entity instr_mem is
     port(
-        addr_instr : in std_logic_vector(31 downto 0);
-        rd_instr : out std_logic_vector(31 downto 0)
+        --input
+        addr_instr  : in std_logic_vector(31 downto 0);
+        --output
+        rd_instr    : out std_logic_vector(31 downto 0)
     );
 end instr_mem;
 
