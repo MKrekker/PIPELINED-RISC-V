@@ -5,6 +5,7 @@ use ieee.numeric_std.all;
 entity datapath is
     port(
         --inputs 
+        pcsrc_e         : in std_logic;
         clk             : in std_logic;
         reset           : in std_logic;
         regwrite_d      : in std_logic;
@@ -16,7 +17,7 @@ entity datapath is
         alusrc_d        : in std_logic;
         immsrc_d        : in std_logic_vector(1 downto 0);
         --output
-        zero            : out std_logic
+        zero_e            : out std_logic
 
     );
 end datapath;
@@ -31,6 +32,8 @@ architecture rtl of datapath is
     signal pcf_buf          : std_logic_vector(31 downto 0);
     signal rd_instr         : std_logic_vector(31 downto 0);
     signal instr_d          : std_logic_vector(31 downto 0);
+    signal pc_d             : std_logic_vector(31 downto 0);
+    signal rd_d             : std_logic_vector(4 downto 0);
     signal rd_w             : std_logic_vector(4 downto 0);
     signal result_w         : std_logic_vector(31 downto 0);
     signal regwrite_w       : std_logic;
@@ -59,13 +62,11 @@ architecture rtl of datapath is
     signal aluresult_m      : std_logic_vector(31 downto 0);
     signal writedata_m      : std_logic_vector(31 downto 0);
     signal rd_m             : std_logic_vector(4 downto 0);
-    signal pcplus4_m        : std_logic_vector(31 downto 0):
-    signal rd_memr          : std_logic_vector(31 downto 0);
-    signal regwrite_w       : std_logic;      
+    signal pcplus4_m        : std_logic_vector(31 downto 0);
+    signal rd_memr          : std_logic_vector(31 downto 0);     
     signal resultsrc_w      : std_logic_vector(1 downto 0);
     signal aluresult_w      : std_logic_vector(31 downto 0);
     signal readdata_w       : std_logic_vector(31 downto 0);
-    signal rd_w             : std_logic_vector(4 downto 0);
     signal pcplus4_w        : std_logic_vector(31 downto 0);
     
     begin
@@ -84,7 +85,7 @@ architecture rtl of datapath is
                 clk     => clk,
                 reset   => reset,
                 PCNext  => pcf_in,
-                PCcur   => pcf_buf 
+                PC_cur   => pcf_buf 
             );
 
         --instantiation instruction memory
@@ -111,7 +112,7 @@ architecture rtl of datapath is
                 pcplus4_f   => pcplus4_f,
                 instr_d     => instr_d,
                 pc_d        => pcf_buf,
-                pcplus4_d   => pcplus4_d,
+                pcplus4_d   => pcplus4_d
             );
 
         --instantiation register file
@@ -152,7 +153,7 @@ architecture rtl of datapath is
                 rd_d            => rd_d,
                 immext_d        => immext_d,
                 pcplus4_d       => pcplus4_d,
-                regwrite_e      => regwrtie_e,
+                regwrite_e      => regwrite_e,
                 resultsrc_e     => resultsrc_e,
                 memwrite_e      => memwrite_e,
                 jump_e          => jump_e,
@@ -185,7 +186,7 @@ architecture rtl of datapath is
                 );
 
             --instantiation ALU
-            inst_alu : entity work_ALU(rtl)
+            inst_alu : entity work.ALU(rtl)
                 port map(
                     SrcA            => rd1_e,
                     SrcB            => srcb_e,
