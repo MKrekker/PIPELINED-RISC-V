@@ -5,7 +5,6 @@ use ieee.numeric_std.all;
 entity datapath is
     port(
         --inputs 
-        pcsrc_e         : in std_logic;
         clk             : in std_logic;
         reset           : in std_logic;
         regwrite_d      : in std_logic;
@@ -25,6 +24,7 @@ end datapath;
 architecture rtl of datapath is
 
     --internal signals
+    signal pcsrc_e          : std_logic;
     signal pcplus4_f        : std_logic_vector(31 downto 0);
     signal pcplus4_d        : std_logic_vector(31 downto 0);
     signal pctarget_e       : std_logic_vector(31 downto 0);
@@ -168,6 +168,7 @@ architecture rtl of datapath is
                 pcplus4_e       => pcplus4_e
             );
 
+            pcsrc_e <= jump_e or (branch_e and zero_e);
             --instantiation multiplexer 2 to 1
             inst_mux_2 : entity work.mux_2(rtl)
                 port map(
