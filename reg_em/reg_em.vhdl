@@ -15,12 +15,12 @@ entity reg_em is
         pcplus4_e       : in std_logic_vector(31 downto 0);
 
         --outputs
-        regwrite_m      : out std_logic;
+        regwrite_m      : buffer std_logic;
         resultsrc_m     : out std_logic_vector(1 downto 0);
         memwrite_m      : out std_logic;
         aluresult_m     : buffer std_logic_vector(31 downto 0);
         writedata_m     : out std_logic_vector(31 downto 0);
-        rd_m            : out std_logic_vector(11 downto 7);
+        rd_m            : buffer std_logic_vector(11 downto 7);
         pcplus4_m       : out std_logic_vector(31 downto 0)
     );
 end reg_em;

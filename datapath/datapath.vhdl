@@ -5,83 +5,81 @@ use ieee.numeric_std.all;
 entity datapath is
     port(
         --inputs
-        forward_ae      : in std_logic_vector(1 downto 0);
-        forward_be      : in std_logic_vector(1 downto 0); 
-        en_pc           : in std_logic;
-        en_fd           : in std_logic;
-        clr_fd          : in std_logic;
-        clr_de          : in std_logic;
-        clk             : in std_logic;
-        reset           : in std_logic;
-        pcsrc_e         : in std_logic;
-        regwrite_d      : in std_logic;
-        resultsrc_d     : in std_logic_vector(1 downto 0);
-        memwrite_d      : in std_logic;
-        jump_d          : in std_logic;
-        branch_d        : in std_logic;
-        alucontrol_d    : in std_logic_vector(2 downto 0);
-        alusrc_d        : in std_logic;
-        immsrc_d        : in std_logic_vector(1 downto 0);
-        
+        clk                 : in std_logic;
+        en_pc               : in std_logic;
+        en_fd               : in std_logic;
+        clr_fd              : in std_logic;
+        clr_de              : in std_logic;
+        pcsrc_e             : in std_logic;
+        reset               : in std_logic;
+        immsrc_d            : in std_logic_vector(1 downto 0);
+        regwrite_d          : in std_logic;
+        resultsrc_d         : in std_logic_vector(1 downto 0);
+        memwrite_d          : in std_logic;
+        jump_d              : in std_logic;
+        branch_d            : in std_logic;
+        alucontrol_d        : in std_logic_vector(2 downto 0);
+        alusrc_d            : in std_logic;
+        forward_ae          : in std_logic;
+        forward_be          : in std_logic;
+
+        --buffers
+        rd_w                : buffer std_logic_vector(4 downto 0);
+        regwrite_w          : buffer std_logic;
+        resultsrc_e         : buffer std_logic_vector(1 downto 0);
+        rd_e                : buffer std_logic_vector(4 downto 0);
+        immext_e            : buffer std_logic_vector(31 downto 0);
+        regwrite_m          : buffer std_logic;
+        rd_m                : buffer std_logic_vector(4 downto 0);
+
         --outputs
-        
-        rd_e            : buffer std_logic_vector(4 downto 0);
-        resultsrc_e     : buffer std_logic_vector(1 downto 0);
-        regwrite_m      : buffer std_logic;
-        rd_m            : buffer std_logic_vector(4 downto 0);
-        rd_w            : buffer std_logic_vector(4 downto 0);
-        instr_d         : buffer std_logic_vector(31 downto 0);
-        zero_e          : out std_logic;
-        jump_e          : out std_logic;
-        branch_e        : out std_logic;
-        rs1_e           : out std_logic_vector(4 downto 0);
-        rs2_e           : out std_logic_vector(4 downto 0);
-        regwrite_w      : buffer std_logic
+        jump_e              : out std_logic;
+        branch_e            : out std_logic;
+        zero_e              : out std_logic;
+        instruction         : out std_logic_vector(24 downto 15);    
 
     );
 end datapath;
 
 architecture rtl of datapath is
 
-    --internal signals
-    signal pcplus4_f        : std_logic_vector(31 downto 0);
-    signal pcplus4_d        : std_logic_vector(31 downto 0);
-    signal pctarget_e       : std_logic_vector(31 downto 0);
-    signal pcf_in           : std_logic_vector(31 downto 0);
-    signal pcf_buf          : std_logic_vector(31 downto 0);
-    signal rd_instr         : std_logic_vector(31 downto 0);
-    signal pc_d             : std_logic_vector(31 downto 0);
-    signal rd_d             : std_logic_vector(4 downto 0);
-    signal result_w         : std_logic_vector(31 downto 0);
-    signal rd1              : std_logic_vector(31 downto 0);
-    signal rd2              : std_logic_vector(31 downto 0);
-    signal immext_d         : std_logic_vector(31 downto 0);
-    signal regwrite_e       : std_logic;
-    signal memwrite_e       : std_logic;
-    signal alucontrol_e     : std_logic_vector(2 downto 0);
-    signal alusrc_e         : std_logic;
-    signal rd2_e            : std_logic_vector(31 downto 0);
-    signal rd1_e            : std_logic_vector(31 downto 0);
-    signal pc_e             : std_logic_vector(31 downto 0);
-    signal immext_e         : std_logic_vector(31 downto 0);
-    signal pcplus4_e        : std_logic_vector(31 downto 0);
-    signal srcb_e           : std_logic_vector(31 downto 0);
-    signal aluresult        : std_logic_vector(31 downto 0);
-    signal writedata_e      : std_logic_vector(31 downto 0);      
-    signal resultsrc_m      : std_logic_vector(1 downto 0);
-    signal memwrite_m       : std_logic;
-    signal aluresult_m      : std_logic_vector(31 downto 0);
-    signal writedata_m      : std_logic_vector(31 downto 0);
-    signal pcplus4_m        : std_logic_vector(31 downto 0);
-    signal rd_memr          : std_logic_vector(31 downto 0);     
-    signal resultsrc_w      : std_logic_vector(1 downto 0);
-    signal aluresult_w      : std_logic_vector(31 downto 0);
-    signal readdata_w       : std_logic_vector(31 downto 0);
-    signal pcplus4_w        : std_logic_vector(31 downto 0);
-    signal Src_AE           : std_logic_vector(31 downto 0);
-    signal forward_be_mux_o : std_logic_vector(31 downto 0);
-    
-    
+    --signals
+    signal pcplus4_f            : std_logic_vector(31 downto 0);
+    signal pctarget_e           : std_logic_vector(31 downto 0);
+    signal pcsrc_e              : std_logic;
+    signal pcf_in               : std_logic_vector(31 downto 0);
+    signal pcf_buf              : std_logic_vector(31 downto 0);
+    signal rd_instr             : std_logic_vector(31 downto 0);
+    signal pcplus4_f            : std_logic_vector(31 downto 0);
+    signal instr_d              : std_logic_vector(31 downto 0);
+    signal pc_d                 : std_logic_vector(31 downto 0);
+    signal pcplus4_d            : std_logic_vector(31 downto 0);
+    signal result_w             : std_logic_vector(31 downto 0);
+    signal rd1                  : std_logic_vector(31 downto 0);
+    signal rd2                  : std_logic_vector(31 downto 0);
+    signal immext_d             : std_logic_vector(31 downto 0);
+    signal rd1_e                : std_logic_vector(31 downto 0);
+    signal rd2_e                : std_logic_vector(31 downto 0);
+    signal regwrite_e           : std_logic;
+    signal memwrite_e           : std_logic;
+    signal alucontrol_e         : std_logic_vector(2 downto 0);
+    signal alusrc_e             : std_logic;
+    signal pcplus4_e            : std_logic_vector(31 downto 0);
+    signal aluresult_m          : std_logic_vector(31 downto 0);
+    signal forward_ae_mux_o     : std_logic_vector(31 downto 0);
+    signal forward_be_mux_o     : std_logic_vector(31 downto 0);
+    signal aluresult_d          : std_logic_vector(31 downto 0);
+    signal resultsrc_m          : std_logic_vector(1 downto 0);
+    signal memwrite_m           : std_logic;
+    signal aluresult_m          : std_logic_vector(31 downto 0);
+    signal writedata_m          : std_logic_vector(31 downto 0);
+    signal pcplus4_m            : std_logic_vector(31 downto 0);
+    signal resultsrc_w          : std_logic_vector(1 downto 0);
+    signal aluresult_w          : std_logic_vector(31 downto 0);
+    signal readdata_w           : std_logic_vector(31 downto 0);
+    signal pcplus4_w            : std_logic_vector(31 downto 0);
+    signal rd_memr              : std_logic_vector(31 downto 0);
+
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
@@ -90,7 +88,7 @@ architecture rtl of datapath is
                 port_in1    => pcplus4_f,
                 port_in2    => pctarget_e,
                 sel         => pcsrc_e,
-                port_out    =>pcf_in
+                port_out    => pcf_in
             );
 
         --instantiation program counter
@@ -142,7 +140,7 @@ architecture rtl of datapath is
                 write_en            => regwrite_w,
                 clk                 => clk,
                 read_data1          => rd1,
-                read_data2          => rd2
+                read_data2          => rd2,
             );
 
         --instantiation extend
@@ -157,7 +155,7 @@ architecture rtl of datapath is
         inst_reg_de : entity work.reg_de(rtl)
             port map(
                 clk             => clk,
-                clr             => clr_de,
+                clr_de          => clr_de,
                 regwrite_d      => regwrite_d,
                 resultsrc_d     => resultsrc_d,
                 memwrite_d      => memwrite_d,
@@ -170,7 +168,7 @@ architecture rtl of datapath is
                 rs1_d           => instr_d(19 downto 15),
                 rs2_d           => instr_d(24 downto 20),
                 pc_d            => pc_d,
-                rd_d            => rd_d,
+                rd_d            => instr_d(11 downto 7),
                 immext_d        => immext_d,
                 pcplus4_d       => pcplus4_d,
                 regwrite_e      => regwrite_e,
@@ -190,7 +188,28 @@ architecture rtl of datapath is
                 pcplus4_e       => pcplus4_e
             );
 
-            
+            --instantiation multiplexer for SrcAE
+            inst_mux_3_src_ae : entity work.mux_3(rtl)
+                generic map(32)
+                port map(
+                    port_in1    => rd1_e,
+                    port_in2    => result_w,
+                    port_in3    => aluresult_m,
+                    sel         => forward_ae,
+                    port_out    => forward_ae_mux_o
+                );
+                
+            --instantiation multiplexer for SrcBE
+            inst_mux_3_src_be : entity work.mux_3(rtl)
+                generic map(32)
+                port map(
+                    port_in1    => rd2_e,
+                    port_in2    => result_w,
+                    port_in3    => aluresult_m,
+                    sel         => forward_be,
+                    port_out    => forward_be_mux_o
+                );
+
             --instantiation multiplexer 2 to 1
             inst_mux_2 : entity work.mux_2(rtl)
                 generic map(32)
@@ -209,35 +228,15 @@ architecture rtl of datapath is
                     c_out   => pctarget_e
                 );
             
-            --instantiation multiplexer for SrcAE
-            inst_mux_3_src_ae : entity work.mux_3(rtl)
-                generic map(32)
-                port map(
-                    port_in1    => rd1_e,
-                    port_in2    => result_w,
-                    port_in3    => aluresult_m,
-                    sel         => forward_ae,
-                    port_out    =>  Src_AE
-                );
-                
-            --instantiation multiplexer for SrcBE
-            inst_mux_3_src_be : entity work.mux_3(rtl)
-                generic map(32)
-                port map(
-                    port_in1    => rd2_e,
-                    port_in2    => result_w,
-                    port_in3    => aluresult_m,
-                    sel         => forward_be,
-                    port_out    => forward_be_mux_o
-                );
+            
             --instantiation ALU
             inst_alu : entity work.ALU(rtl)
                 port map(
-                    SrcA            => Src_AE,
+                    SrcA            => forward_ae_mux_o,
                     SrcB            => srcb_e,
                     ALUControl      => alucontrol_e,
                     Zero            => zero_e,
-                    ALUResult       => aluresult
+                    ALUResult       => aluresult_d
                 );
             
             --instantiation Register between execute and memory
@@ -248,7 +247,7 @@ architecture rtl of datapath is
                     regwrite_e      => regwrite_e,
                     resultsrc_e     => resultsrc_e,
                     memwrite_e      => memwrite_e,
-                    aluresult       => aluresult,
+                    aluresult       => aluresult_d,
                     writedata_e     => writedata_e,
                     rd_e            => rd_e,
                     pcplus4_e       => pcplus4_e,

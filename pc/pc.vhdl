@@ -17,7 +17,7 @@ architecture rtl of pc is
     begin
         process(clk, reset, en)
             begin
-                if (reset = '1')then
+                if (reset = '1' or en = '1')then
                     PC_cur <= (others => '0');
                 else if rising_edge(clk) and en = '0' then
                         PC_cur <= PCNext;

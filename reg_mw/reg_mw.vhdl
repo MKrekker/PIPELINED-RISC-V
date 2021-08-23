@@ -13,11 +13,11 @@ entity reg_mw is
         rd_m            : in std_logic_vector(11 downto 7);
         pcplus4_m       : in std_logic_vector(31 downto 0);
         --outputs
-        regwrite_w      : out std_logic;
+        regwrite_w      : buffer std_logic;
         resultsrc_w     : out std_logic_vector(1 downto 0);
         aluresult_w     : out std_logic_vector(31 downto 0);
         readdata_w      : out std_logic_vector(31 downto 0);
-        rd_w            : out std_logic_vector(11 downto 7);
+        rd_w            : buffer std_logic_vector(11 downto 7);
         pcplus4_w       : out std_logic_vector(31 downto 0)
     );
 end reg_mw;

@@ -6,7 +6,7 @@ entity reg_de is
     port(
         
         --inputs
-        clr             : in std_logic;
+        clr_de          : in std_logic;
         clk             : in std_logic;
         regwrite_d      : in std_logic;
         resultsrc_d     : in std_logic_vector(1 downto 0);
@@ -15,8 +15,8 @@ entity reg_de is
         branch_d        : in std_logic;
         alucontrol_d    : in std_logic_vector(2 downto 0);
         alusrc_d        : in std_logic;
-        rs1_d           : buffer std_logic_vector(19 downto 15);
-        rs2_d           : buffer std_logic_vector(24 downto 20);
+        rs1_d           : in std_logic_vector(19 downto 15);
+        rs2_d           : in std_logic_vector(24 downto 20);
         rd1             : in std_logic_vector(31 downto 0);
         rd2             : in std_logic_vector(31 downto 0);
         pc_d            : in std_logic_vector(31 downto 0);
@@ -33,7 +33,7 @@ entity reg_de is
         alucontrol_e    : out std_logic_vector(2 downto 0);
         alusrc_e        : out std_logic;
         rd1_e           : out std_logic_vector(31 downto 0);
-        rd2_e           : buffer std_logic_vector(31 downto 0);
+        rd2_e           : out std_logic_vector(31 downto 0);
         rs1_e           : out std_logic_vector(4 downto 0);
         rs2_e           : out std_logic_vector(4 downto 0);
         pc_e            : out std_logic_vector(31 downto 0);
@@ -46,7 +46,7 @@ end reg_de;
 architecture rtl of reg_de is
     begin 
         process(clk) begin
-            if(clr = '1')then
+            if(clr_de = '1')then
                 regwrite_e      <= '0';
                 resultsrc_e     <= (others => '0');
                 memwrite_e      <= '0';

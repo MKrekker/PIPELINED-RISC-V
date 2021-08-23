@@ -6,34 +6,44 @@ entity reg_fd_tb is
 end reg_fd_tb;
 
 architecture test of reg_fd_tb is
-    signal clk : std_logic;
-    signal rd : std_logic_vector(31 downto 0);
-    signal pc_f : std_logic_vector(31 downto 0);
-    signal pcplus4_f : std_logic_vector(31 downto 0);
-    signal instr_d : std_logic_vector(31 downto 0);
-    signal pc_d : std_logic_vector(31 downto 0);
-    signal pcplus4_d : std_logic_vector(31 downto 0);
+    
+    signal clk          : std_logic;
+    signal rd           : std_logic_vector(31 downto 0);
+    signal pc_f         : std_logic_vector(31 downto 0);
+    signal pcplus4_f    : std_logic_vector(31 downto 0);
+    signal instr_d      : std_logic_vector(31 downto 0);
+    signal pc_d         : std_logic_vector(31 downto 0);
+    signal pcplus4_d    : std_logic_vector(31 downto 0);
+    signal clr          : std_logic;
+    signal en           : std_logic;
+
     begin
         inst_reg_fd : entity work.reg_fd(rtl)
             port map(
-                clk => clk,
-                rd => rd,
-                pc_f => pc_f,
-                pcplus4_f => pcplus4_f,
-                instr_d => instr_d,
-                pc_d => pc_d,
-                pcplus4_d => pcplus4_d
+                clk         => clk,
+                rd          => rd,
+                pc_f        => pc_f,
+                pcplus4_f   => pcplus4_f,
+                instr_d     => instr_d,
+                pc_d        => pc_d,
+                pcplus4_d   => pcplus4_d,
+                clr         => clr,
+                en          => en
             );
 
         process begin
+            clr <= '1';
+            en <= '0';
             clk <= '1';
             wait for 5 ns;
+            clr <= '0';
             clk <= '0';
             wait for 5 ns;
             clk <= '1';
             wait for 5 ns;
             clk <= '0';
             wait for 5 ns;
+            en <= '1';
             clk <= '1';
             wait for 5 ns;
             clk <= '0';

@@ -21,7 +21,7 @@ end reg_fd;
 architecture rtl of reg_fd is
     begin
         process(clk)begin
-            if clr = '1' then
+            if clr = '1' or en = '1' then
                 instr_d     <= (others => '0');
                 pcplus4_d   <= (others => '0');
                 pc_d        <= (others => '0');

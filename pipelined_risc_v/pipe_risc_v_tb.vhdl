@@ -18,11 +18,13 @@ architecture test of pipe_risc_v_tb is
                 reset           => reset,
                 instruction     => instruction
             );
-        reset <= '1';
+        
         process begin
+            
             reset <= '0';
             clk <= '1';
             wait for 5 ns;
+            reset <= '1';
             clk <= '0';
             wait for 5 ns;
             clk <= '1';
