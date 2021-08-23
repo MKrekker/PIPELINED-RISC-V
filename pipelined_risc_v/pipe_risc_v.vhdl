@@ -32,7 +32,7 @@ architecture rtl of pipe_risc_v is
     signal clr_fd           : std_logic;
     signal clr_de           : std_logic;
     signal rd_e             : std_logic_vector(4 downto 0);
-    signal resultsrc_e      : std_logic_vector(1 downto 0);
+    signal resultsrc_e0     : std_logic;
     signal rs1_e            : std_logic_vector(4 downto 0);
     signal rs2_e            : std_logic_vector(4 downto 0);
     signal regwrite_m       : std_logic;
@@ -63,7 +63,7 @@ architecture rtl of pipe_risc_v is
                 alucontrol_d        => alucontrol_d,
                 alusrc_d            => alusrc_d,
                 immsrc_d            => immsrc_d,
-                resultsrc_e         => resultsrc_e,
+                resultsrc_e0         => resultsrc_e0,
                 regwrite_m          => regwrite_m,
                 rd_m                => rd_m,
                 rd_w                => rd_w,
@@ -102,7 +102,7 @@ architecture rtl of pipe_risc_v is
                 rs1_d               => instruction(19 downto 15),
                 rs2_d               => instruction(24 downto 20),
                 rd_e                => rd_e,
-                resultsrc_e0        => resultsrc_e(0),
+                resultsrc_e0        => resultsrc_e0,
                 rs1_e               => rs1_e,
                 rs2_e               => rs2_e,
                 rd_m                => rd_m,

@@ -20,15 +20,13 @@ entity datapath is
         branch_d            : in std_logic;
         alucontrol_d        : in std_logic_vector(2 downto 0);
         alusrc_d            : in std_logic;
-        forward_ae          : in std_logic;
-        forward_be          : in std_logic;
+        forward_ae          : in std_logic_vector(1 downto 0);
+        forward_be          : in std_logic_vector(1 downto 0);
 
         --buffers
         rd_w                : buffer std_logic_vector(4 downto 0);
         regwrite_w          : buffer std_logic;
-        resultsrc_e         : buffer std_logic_vector(1 downto 0);
         rd_e                : buffer std_logic_vector(4 downto 0);
-        
         regwrite_m          : buffer std_logic;
         rd_m                : buffer std_logic_vector(4 downto 0);
         instr_d             : buffer std_logic_vector(31 downto 0);
@@ -37,7 +35,8 @@ entity datapath is
         branch_e            : out std_logic;
         zero_e              : out std_logic;
         rs1_e               : out std_logic_vector(4 downto 0);
-        rs2_e               : out std_logic_vector(4 downto 0)    
+        rs2_e               : out std_logic_vector(4 downto 0);
+        resultsrc_e0        : out std_logic    
 
     );
 end datapath;
@@ -47,11 +46,9 @@ architecture rtl of datapath is
     --signals
     signal pcplus4_f            : std_logic_vector(31 downto 0);
     signal pctarget_e           : std_logic_vector(31 downto 0);
-    signal pcsrc_e              : std_logic;
     signal pcf_in               : std_logic_vector(31 downto 0);
     signal pcf_buf              : std_logic_vector(31 downto 0);
     signal rd_instr             : std_logic_vector(31 downto 0);
-    signal pcplus4_f            : std_logic_vector(31 downto 0);
     signal pc_d                 : std_logic_vector(31 downto 0);
     signal pcplus4_d            : std_logic_vector(31 downto 0);
     signal result_w             : std_logic_vector(31 downto 0);
@@ -71,7 +68,6 @@ architecture rtl of datapath is
     signal aluresult_d          : std_logic_vector(31 downto 0);
     signal resultsrc_m          : std_logic_vector(1 downto 0);
     signal memwrite_m           : std_logic;
-    signal aluresult_m          : std_logic_vector(31 downto 0);
     signal writedata_m          : std_logic_vector(31 downto 0);
     signal pcplus4_m            : std_logic_vector(31 downto 0);
     signal resultsrc_w          : std_logic_vector(1 downto 0);
@@ -80,6 +76,10 @@ architecture rtl of datapath is
     signal pcplus4_w            : std_logic_vector(31 downto 0);
     signal rd_memr              : std_logic_vector(31 downto 0);
     signal immext_e             : std_logic_vector(31 downto 0);
+    signal pc_e                 : std_logic_vector(31 downto 0);
+    signal srcb_e               : std_logic_vector(31 downto 0);
+    signal writedata_e          : std_logic_vector(31 downto 0);
+    signal resultsrc_e          : std_logic_vector(1 downto 0);
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
@@ -140,7 +140,7 @@ architecture rtl of datapath is
                 write_en            => regwrite_w,
                 clk                 => clk,
                 read_data1          => rd1,
-                read_data2          => rd2,
+                read_data2          => rd2
             );
 
         --instantiation extend
@@ -187,7 +187,9 @@ architecture rtl of datapath is
                 immext_e        => immext_e,
                 pcplus4_e       => pcplus4_e
             );
-
+            
+            resultsrc_e0 <= resultsrc_e(0);
+            
             --instantiation multiplexer for SrcAE
             inst_mux_3_src_ae : entity work.mux_3(rtl)
                 generic map(32)
