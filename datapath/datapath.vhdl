@@ -28,15 +28,16 @@ entity datapath is
         regwrite_w          : buffer std_logic;
         resultsrc_e         : buffer std_logic_vector(1 downto 0);
         rd_e                : buffer std_logic_vector(4 downto 0);
-        immext_e            : buffer std_logic_vector(31 downto 0);
+        
         regwrite_m          : buffer std_logic;
         rd_m                : buffer std_logic_vector(4 downto 0);
-
+        instr_d             : buffer std_logic_vector(31 downto 0);
         --outputs
         jump_e              : out std_logic;
         branch_e            : out std_logic;
         zero_e              : out std_logic;
-        instruction         : out std_logic_vector(24 downto 15);    
+        rs1_e               : out std_logic_vector(4 downto 0);
+        rs2_e               : out std_logic_vector(4 downto 0)    
 
     );
 end datapath;
@@ -51,7 +52,6 @@ architecture rtl of datapath is
     signal pcf_buf              : std_logic_vector(31 downto 0);
     signal rd_instr             : std_logic_vector(31 downto 0);
     signal pcplus4_f            : std_logic_vector(31 downto 0);
-    signal instr_d              : std_logic_vector(31 downto 0);
     signal pc_d                 : std_logic_vector(31 downto 0);
     signal pcplus4_d            : std_logic_vector(31 downto 0);
     signal result_w             : std_logic_vector(31 downto 0);
@@ -79,7 +79,7 @@ architecture rtl of datapath is
     signal readdata_w           : std_logic_vector(31 downto 0);
     signal pcplus4_w            : std_logic_vector(31 downto 0);
     signal rd_memr              : std_logic_vector(31 downto 0);
-
+    signal immext_e             : std_logic_vector(31 downto 0);
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
