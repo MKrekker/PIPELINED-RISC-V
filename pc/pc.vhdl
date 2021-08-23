@@ -7,6 +7,7 @@ entity pc is
         PCNext : in std_logic_vector(31 downto 0);
         clk    : in std_logic;
         reset  : in std_logic;
+        en     : in std_logic;
         --output
         PC_cur : buffer std_logic_vector(31 downto 0)
     );
@@ -14,11 +15,11 @@ end pc;
 
 architecture rtl of pc is
     begin
-        process(clk, reset)
+        process(clk, reset, en)
             begin
                 if (reset = '1')then
                     PC_cur <= (others => '0');
-                else if clk'event and clk = '1' then
+                else if rising_edge(clk) and en = '0' then
                         PC_cur <= PCNext;
                     end if;
                 end if;

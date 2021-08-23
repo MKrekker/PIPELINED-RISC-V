@@ -11,7 +11,7 @@ entity mux_3 is
         port_in3 :  in std_logic_vector(number-1 downto 0);
         sel      :  in std_logic_vector(1 downto 0);
         --output
-        port_out :  out std_logic_vector(number-1 downto 0)
+        port_out :  buffer std_logic_vector(number-1 downto 0)
     );
 end mux_3;
 
