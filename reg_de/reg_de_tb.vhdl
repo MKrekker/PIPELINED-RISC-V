@@ -22,6 +22,8 @@ architecture test of reg_de_tb is
     signal immext_d         : std_logic_vector(31 downto 0);
     signal pcplus4_d        : std_logic_vector(31 downto 0);
     signal clr_de           : std_logic;
+    signal rs1_d            : std_logic_vector(4 downto 0);
+    signal rs2_d            : std_logic_vector(4 downto 0);
     
     --outputs
     signal regwrite_e       : std_logic;
@@ -37,6 +39,8 @@ architecture test of reg_de_tb is
     signal rd_e             : std_logic_vector(11 downto 7);
     signal immext_e         : std_logic_vector(31 downto 0);
     signal pcplus4_e        : std_logic_vector(31 downto 0);
+    signal rs1_e            : std_logic_vector(4 downto 0);
+    signal rs2_e            : std_logic_vector(4 downto 0);
 
     begin
 
@@ -57,7 +61,8 @@ architecture test of reg_de_tb is
                  immext_d       => immext_d,
                  pcplus4_d      => pcplus4_d,
                  clr_de         => clr_de, 
-                
+                 rs1_d          => rs1_d,
+                 rs2_d          => rs2_d,                
                 --outputs
                  regwrite_e     => regwrite_e,
                  resultsrc_e    => resultsrc_e,
@@ -71,7 +76,9 @@ architecture test of reg_de_tb is
                  pc_e           => pc_e,
                  rd_e           => rd_e,
                  immext_e       => immext_e,
-                 pcplus4_e      => pcplus4_e
+                 pcplus4_e      => pcplus4_e, 
+                 rs1_e          => rs1_e,
+                 rs2_e          => rs2_e
             );
 
             process begin

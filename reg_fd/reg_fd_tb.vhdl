@@ -32,49 +32,37 @@ architecture test of reg_fd_tb is
             );
 
         process begin
-            clr <= '1';
             en <= '0';
-            clk <= '1';
-            wait for 5 ns;
+            clr <= '1';
+            wait for 25 ns;
             clr <= '0';
-            clk <= '0';
-            wait for 5 ns;
-            clk <= '1';
-            wait for 5 ns;
-            clk <= '0';
-            wait for 5 ns;
-            en <= '1';
-            clk <= '1';
-            wait for 5 ns;
-            clk <= '0';
-            wait for 5 ns;
-            clk <= '1';
-            wait for 5 ns;
-            clk <= '0';
-            wait for 5 ns;
-            clk <= '1';
-            wait for 5 ns;
-            clk <= '0';
-            wait for 5 ns;
-            clk <= '1';
-            wait for 5 ns;
-            clk <= '0';
             wait;
         end process;
 
         process begin
+            -- do cycles
+            for i in 1 to 26 loop
+            clk <= '1';
+            wait for 10 ns;
+            clk <= '0';
+            wait for 10 ns;
+            end loop;
+                wait;
+        end process;
+
+        process begin
             rd <= x"FFFFFFFF";
-            pc_f <= x"00000000";
+            pc_f <= x"00000001";
             pcplus4_f <= x"88888888";
-            wait for 12 ns;
+            wait for 10 ns;
             rd <= x"FFFFFFF1";
             pc_f <= x"FFFFFFF5";
             pcplus4_f <= x"FFFFFFFA";
-            wait for 15 ns;
+            wait for 31 ns;
             rd <= x"00000004";
             pc_f <= x"00001004";
             pcplus4_f <= x"00A00004";
-            wait for 25 ns;
+            wait for 41 ns;
             wait;
         end process;
 
