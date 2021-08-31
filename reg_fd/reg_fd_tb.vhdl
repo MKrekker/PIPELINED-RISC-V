@@ -53,7 +53,7 @@ architecture test of reg_fd_tb is
         process begin
             rd <= x"FFFFFFFF";
             pc_f <= x"00000001";
-            pcplus4_f <= x"88888888";
+            pcplus4_f <= x"00000005";
             wait for 10 ns;
             rd <= x"FFFFFFF1";
             pc_f <= x"FFFFFFF5";

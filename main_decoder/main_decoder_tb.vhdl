@@ -14,12 +14,21 @@ architecture test of main_decoder_tb is
     signal ImmSrc : std_logic_vector(1 downto 0);
     signal RegWrite : std_logic;
     signal ALUOp : std_logic_vector(1 downto 0);
-    signal ResultSrc : std_logic;
+    signal ResultSrc : std_logic_vector(1 downto 0);
 
     begin
 
         inst_main_decoder : entity work.main_decoder(rtl)
-                            port map(op => op, branch => branch, MemWrite => MemWrite, ALUSrc => ALUSrc, ImmSrc => ImmSrc, RegWrite => RegWrite, ALUOp => ALUOp, ResultSrc => ResultSrc);
+            port map(
+                op => op,
+                branch => branch,
+                MemWrite => MemWrite,
+                ALUSrc => ALUSrc,
+                ImmSrc => ImmSrc,
+                RegWrite => RegWrite,
+                ALUOp => ALUOp,
+                ResultSrc => ResultSrc
+                );
 
         process begin
             op <= "0000011";

@@ -124,6 +124,9 @@ architecture test of reg_de_tb is
                 rd_d <= b"01001";
                 immext_d <= x"1010_0101";
                 pcplus4_d <= x"0110_1001";
+                rs1_d <= b"11110";
+                rs2_d <= b"00011";
+                rd_d  <= b"01010";
                 wait for 12 ns;
                 regwrite_d <= '1'; 
                 resultsrc_d <= "01";

@@ -6,12 +6,13 @@ entity datapath is
     port(
         --inputs
         clk                 : in std_logic;
+        reset               : in std_logic;
         en_pc               : in std_logic;
         en_fd               : in std_logic;
         clr_fd              : in std_logic;
         clr_de              : in std_logic;
         pcsrc_e             : in std_logic;
-        reset               : in std_logic;
+        
         immsrc_d            : in std_logic_vector(1 downto 0);
         regwrite_d          : in std_logic;
         resultsrc_d         : in std_logic_vector(1 downto 0);
@@ -80,6 +81,10 @@ architecture rtl of datapath is
     signal srcb_e               : std_logic_vector(31 downto 0);
     signal writedata_e          : std_logic_vector(31 downto 0);
     signal resultsrc_e          : std_logic_vector(1 downto 0);
+    signal not_clk              : std_logic;
+    signal not_en_pc            : std_logic;
+    signal not_en_fd            : std_logic;
+    
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
@@ -90,7 +95,9 @@ architecture rtl of datapath is
                 sel         => pcsrc_e,
                 port_out    => pcf_in
             );
-
+        
+        
+        not_en_pc <= not en_pc;
         --instantiation program counter
         inst_pc : entity work.pc(rtl)
             port map(
@@ -98,7 +105,7 @@ architecture rtl of datapath is
                 reset   => reset,
                 PCNext  => pcf_in,
                 PC_cur  => pcf_buf,
-                en      => en_pc 
+                en      => not_en_pc 
             );
 
         --instantiation instruction memory
@@ -115,12 +122,12 @@ architecture rtl of datapath is
                 b_in    => x"00000004",
                 c_out   => pcplus4_f
             );
-
+        not_en_fd   <= not en_fd;
         --instantiation Register between fetch and decode
         inst_reg_fd : entity work.reg_fd(rtl)
             port map(
                 clk         => clk,
-                en          => en_fd,
+                en          => not_en_fd,
                 clr         => clr_fd,
                 rd          => rd_instr,
                 pc_f        => pcf_buf,
@@ -129,7 +136,6 @@ architecture rtl of datapath is
                 pc_d        => pc_d,
                 pcplus4_d   => pcplus4_d
             );
-
         --instantiation register file
         inst_reg_file : entity work.reg_file(rtl)
             port map(
@@ -165,9 +171,9 @@ architecture rtl of datapath is
                 alusrc_d        => alusrc_d,
                 rd1             => rd1,
                 rd2             => rd2,
+                pc_d            => pc_d,
                 rs1_d           => instr_d(19 downto 15),
                 rs2_d           => instr_d(24 downto 20),
-                pc_d            => pc_d,
                 rd_d            => instr_d(11 downto 7),
                 immext_d        => immext_d,
                 pcplus4_d       => pcplus4_d,
@@ -180,9 +186,9 @@ architecture rtl of datapath is
                 alusrc_e        => alusrc_e,
                 rd1_e           => rd1_e,
                 rd2_e           => rd2_e,
+                pc_e            => pc_e,
                 rs1_e           => rs1_e,
                 rs2_e           => rs2_e,
-                pc_e            => pc_e,
                 rd_e            => rd_e,
                 immext_e        => immext_e,
                 pcplus4_e       => pcplus4_e

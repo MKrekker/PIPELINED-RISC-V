@@ -5,40 +5,40 @@ use ieee.numeric_std.all;
 entity pipe_risc_v is
     port(
         clk : in std_logic;
-        reset : in std_logic;
-        instruction : buffer std_logic_vector(31 downto 0)
+        reset : in std_logic
     );
 end pipe_risc_v;
 
 architecture rtl of pipe_risc_v is
 
     --signals
-    signal regwrite_d       : std_logic;
-    signal resultsrc_d      : std_logic_vector(1 downto 0);
-    signal memwrite_d       : std_logic;
-    signal jump_d           : std_logic;
-    signal branch_d         : std_logic;
-    signal alucontrol_d     : std_logic_vector(2 downto 0);
-    signal alusrc_d         : std_logic;
-    signal immsrc_d         : std_logic_vector(1 downto 0);
-    signal zero             : std_logic;
-    signal jump_e           : std_logic;
-    signal branch_e         : std_logic;
-    signal pcsrc_e          : std_logic;
-    signal forward_ae       : std_logic_vector(1 downto 0);
-    signal forward_be       : std_logic_vector(1 downto 0); 
-    signal en_pc            : std_logic;
-    signal en_fd            : std_logic;
-    signal clr_fd           : std_logic;
-    signal clr_de           : std_logic;
-    signal rd_e             : std_logic_vector(4 downto 0);
-    signal resultsrc_e0     : std_logic;
-    signal rs1_e            : std_logic_vector(4 downto 0);
-    signal rs2_e            : std_logic_vector(4 downto 0);
-    signal regwrite_m       : std_logic;
-    signal regwrite_w       : std_logic;
-    signal rd_m             : std_logic_vector(4 downto 0);
-    signal rd_w             : std_logic_vector(4 downto 0);
+    signal regwrite_d       : std_logic := '0';
+    signal resultsrc_d      : std_logic_vector(1 downto 0) := "00";
+    signal memwrite_d       : std_logic := '0';
+    signal jump_d           : std_logic := '0';
+    signal branch_d         : std_logic := '0';
+    signal alucontrol_d     : std_logic_vector(2 downto 0) := "000";
+    signal alusrc_d         : std_logic := '0';
+    signal immsrc_d         : std_logic_vector(1 downto 0) := "00";
+    signal zero             : std_logic := '0';
+    signal jump_e           : std_logic := '0';
+    signal branch_e         : std_logic := '0';
+    signal pcsrc_e          : std_logic := '0';
+    signal forward_ae       : std_logic_vector(1 downto 0) := "00";
+    signal forward_be       : std_logic_vector(1 downto 0) := "00"; 
+    signal en_pc            : std_logic := '0';
+    signal en_fd            : std_logic := '0';
+    signal clr_fd           : std_logic := '0';
+    signal clr_de           : std_logic := '0';
+    signal rd_e             : std_logic_vector(4 downto 0) := "00000";
+    signal resultsrc_e0     : std_logic := '0';
+    signal rs1_e            : std_logic_vector(4 downto 0) := "00000";
+    signal rs2_e            : std_logic_vector(4 downto 0) := "00000";
+    signal regwrite_m       : std_logic := '0';
+    signal regwrite_w       : std_logic := '0';
+    signal rd_m             : std_logic_vector(4 downto 0) := "00000";
+    signal rd_w             : std_logic_vector(4 downto 0) := "00000";
+    signal instr_d_o        : std_logic_vector(31 downto 0) := (others => '0');
     
     
     
@@ -67,7 +67,7 @@ architecture rtl of pipe_risc_v is
                 regwrite_m          => regwrite_m,
                 rd_m                => rd_m,
                 rd_w                => rd_w,
-                instr_d             => instruction,
+                instr_d             => instr_d_o,
                 zero_e              => zero,
                 jump_e              => jump_e,
                 branch_e            => branch_e,
@@ -82,9 +82,9 @@ architecture rtl of pipe_risc_v is
         --instantiation control unit
         inst_control_unit : entity work.control_unit(rtl)
             port map(
-                op              => instruction(6 downto 0),
-                funct3          => instruction(14 downto 12),
-                funct7_5        => instruction(30),
+                op              => instr_d_o(6 downto 0),
+                funct3          => instr_d_o(14 downto 12),
+                funct7_5        => instr_d_o(30),
                 regwrite_d      => regwrite_d,
                 resultsrc_d     => resultsrc_d,
                 memwrite_d      => memwrite_d,
@@ -99,8 +99,8 @@ architecture rtl of pipe_risc_v is
           inst_hazard_unit : entity work.hazard_unit(rtl)
             port map(
                 pcsrc_e             => pcsrc_e,
-                rs1_d               => instruction(19 downto 15),
-                rs2_d               => instruction(24 downto 20),
+                rs1_d               => instr_d_o(19 downto 15),
+                rs2_d               => instr_d_o(24 downto 20),
                 rd_e                => rd_e,
                 resultsrc_e0        => resultsrc_e0,
                 rs1_e               => rs1_e,

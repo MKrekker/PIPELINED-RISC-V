@@ -26,7 +26,7 @@ architecture rtl of reg_fd is
     begin
         process(clk)begin
 
-            if rising_edge(clk) and (en = '0') then
+            if rising_edge(clk) and (en = '1') then
                 if(clr = '1') then
                     memory <= (others => (others => '0'));
                 else
