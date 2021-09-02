@@ -7,14 +7,14 @@
 * **GTKWave**
 * **VHDL**
 
-## Quick Instruction
+# Quick Instruction
 
-### cloning repository
+## cloning repository
 
       $ git clone https://github.com/MKrekker/PIPELINED-RISC-V.git  
       $ cd  PIPELINED-RISC-V  
 
-### compiling VHDL code and looking on wave diagrams in GTKWave
+## compiling VHDL code and looking on wave diagrams in GTKWave
 
       $ ghdl -s test_file.vhdl                 #Syntax Check  
       $ ghdl -a test_file.vhdl                 #Analyse  
