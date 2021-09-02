@@ -14,6 +14,6 @@
 
 2. David A. Patterson, John L. Hennessy, “Computer Organization and Design RISC-V Edition: The Hardware Software Interface”, Morgan Kaufmann, 2017.
 
-3. ISA Specification RISC-V
+3. ISA Specification RISC-V  
   https://riscv.org/technical/specifications/
  
