@@ -1,4 +1,5 @@
 # PIPELINED RISC V
-![image](https://user-images.githubusercontent.com/88595269/131852753-6e772bed-90e3-4295-8fe0-ad04878fc710.png)
+
+![image](https://user-images.githubusercontent.com/88595269/131859713-457ac80f-d9ab-4ce7-895b-a0f1d1c80446.png)
 
 
