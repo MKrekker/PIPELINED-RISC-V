@@ -7,6 +7,25 @@
 2. GTKWave
 3. VHDL
 
+### cloning repository
+
+$ git clone https://github.com/MKrekker/PIPELINED-RISC-V.git 
+$ cd  PIPELINED-RISC-V  
+
+### compiling VHDL code and looking on wave diagrams in GTKWave
+
+      $ ghdl -s test_file.vhdl                 #Syntax Check  
+      $ ghdl -a test_file.vhdl                 #Analyse  
+      $ ghdl -e test_file.vhdl                 #Build   
+      $ ghdl -r test_file --vcd=testbench.vcd  #VCD-Dump  
+      $ gtkwave testbench.vcd                  #Start GTKWave  
+
+Also you can compile and look on wave diagrams in GTKWave with command  
+  
+      $ bash script.sh test_file.vhdl test_file_testbench.vhdl  
+ 
+Last file must be testbench !!! 
+
 # References
 
 1. David M. Harris and Sarah L. Harris, "Digital Design and Computer Architecture, RISC-V Edition"  
