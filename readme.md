@@ -7,6 +7,8 @@
 * **GTKWave**
 * **VHDL**
 
+## Quick Instruction
+
 ### cloning repository
 
       $ git clone https://github.com/MKrekker/PIPELINED-RISC-V.git  
