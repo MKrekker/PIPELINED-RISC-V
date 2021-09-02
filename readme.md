@@ -9,8 +9,8 @@
 
 ### cloning repository
 
-$ git clone https://github.com/MKrekker/PIPELINED-RISC-V.git  
-$ cd  PIPELINED-RISC-V  
+      $ git clone https://github.com/MKrekker/PIPELINED-RISC-V.git  
+      $ cd  PIPELINED-RISC-V  
 
 ### compiling VHDL code and looking on wave diagrams in GTKWave
 
