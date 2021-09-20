@@ -25,7 +25,7 @@ architecture rtl of pipe_risc_v is
     signal branch_e         : std_logic := '0';
     signal pcsrc_e          : std_logic := '0';
     signal forward_ae       : std_logic_vector(1 downto 0) := "00";
-    signal forward_be       : std_logic_vector(1 downto 0) := "00"; 
+    signal forward_be       : std_logic_vector(1 downto 0) := "00";
     signal en_pc            : std_logic := '0';
     signal en_fd            : std_logic := '0';
     signal clr_fd           : std_logic := '0';
@@ -39,9 +39,9 @@ architecture rtl of pipe_risc_v is
     signal rd_m             : std_logic_vector(4 downto 0) := "00000";
     signal rd_w             : std_logic_vector(4 downto 0) := "00000";
     signal instr_d_o        : std_logic_vector(31 downto 0) := (others => '0');
-    
-    
-    
+
+
+
     begin
         --instantiation datapath
         inst_datapath : entity work.datapath(rtl)
@@ -76,8 +76,8 @@ architecture rtl of pipe_risc_v is
                 regwrite_w          => regwrite_w,
                 rd_e                => rd_e
             );
-        
-        pcsrc_e <= jump_e or (branch_e and zero);
+
+        pcsrc_e <= (branch_e and zero) or jump_e ;
 
         --instantiation control unit
         inst_control_unit : entity work.control_unit(rtl)
@@ -94,7 +94,7 @@ architecture rtl of pipe_risc_v is
                 alusrc_d        => alusrc_d,
                 immsrc_d        => immsrc_d
             );
-            
+
           --instantiation control unit
           inst_hazard_unit : entity work.hazard_unit(rtl)
             port map(

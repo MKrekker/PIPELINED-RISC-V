@@ -12,7 +12,7 @@ entity datapath is
         clr_fd              : in std_logic;
         clr_de              : in std_logic;
         pcsrc_e             : in std_logic;
-        
+
         immsrc_d            : in std_logic_vector(1 downto 0);
         regwrite_d          : in std_logic;
         resultsrc_d         : in std_logic_vector(1 downto 0);
@@ -37,7 +37,7 @@ entity datapath is
         zero_e              : out std_logic;
         rs1_e               : out std_logic_vector(4 downto 0);
         rs2_e               : out std_logic_vector(4 downto 0);
-        resultsrc_e0        : out std_logic    
+        resultsrc_e0        : out std_logic
 
     );
 end datapath;
@@ -84,7 +84,7 @@ architecture rtl of datapath is
     signal not_clk              : std_logic;
     signal not_en_pc            : std_logic;
     signal not_en_fd            : std_logic;
-    
+
     begin
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
@@ -95,8 +95,8 @@ architecture rtl of datapath is
                 sel         => pcsrc_e,
                 port_out    => pcf_in
             );
-        
-        
+
+
         not_en_pc <= not en_pc;
         --instantiation program counter
         inst_pc : entity work.pc(rtl)
@@ -105,7 +105,7 @@ architecture rtl of datapath is
                 reset   => reset,
                 PCNext  => pcf_in,
                 PC_cur  => pcf_buf,
-                en      => not_en_pc 
+                en      => not_en_pc
             );
 
         --instantiation instruction memory
@@ -116,7 +116,7 @@ architecture rtl of datapath is
             );
 
         --instantiation adder +4
-        inst_pcplus4 : entity work.PCPlus4(rtl)
+        inst_pcplus4 : entity work.adder(rtl)
             port map(
                 a_in    => pcf_buf,
                 b_in    => x"00000004",
@@ -193,29 +193,29 @@ architecture rtl of datapath is
                 immext_e        => immext_e,
                 pcplus4_e       => pcplus4_e
             );
-            
+
             resultsrc_e0 <= resultsrc_e(0);
-            
+
             --instantiation multiplexer for SrcAE
             inst_mux_3_src_ae : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
-                    port_in1    => rd1_e,
-                    port_in2    => result_w,
-                    port_in3    => aluresult_m,
+                    a    => rd1_e,
+                    b    => result_w,
+                    c    => aluresult_m,
                     sel         => forward_ae,
-                    port_out    => forward_ae_mux_o
+                    y    => forward_ae_mux_o
                 );
-                
+
             --instantiation multiplexer for SrcBE
             inst_mux_3_src_be : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
-                    port_in1    => rd2_e,
-                    port_in2    => result_w,
-                    port_in3    => aluresult_m,
+                    a    => rd2_e,
+                    b    => result_w,
+                    c    => aluresult_m,
                     sel         => forward_be,
-                    port_out    => forward_be_mux_o
+                    y    => forward_be_mux_o
                 );
 
             --instantiation multiplexer 2 to 1
@@ -227,7 +227,7 @@ architecture rtl of datapath is
                     sel         => alusrc_e,
                     port_out    => srcb_e
                 );
-            
+
             --instantiation adder
             inst_adder : entity work.adder(rtl)
                 port map(
@@ -235,8 +235,8 @@ architecture rtl of datapath is
                     b_in    => immext_e,
                     c_out   => pctarget_e
                 );
-            
-            
+
+
             --instantiation ALU
             inst_alu : entity work.ALU(rtl)
                 port map(
@@ -246,7 +246,7 @@ architecture rtl of datapath is
                     Zero            => zero_e,
                     ALUResult       => aluresult_d
                 );
-            
+
             --instantiation Register between execute and memory
             writedata_e <= forward_be_mux_o;
             inst_reg_em : entity work.reg_em(rtl)
@@ -259,7 +259,7 @@ architecture rtl of datapath is
                     writedata_e     => writedata_e,
                     rd_e            => rd_e,
                     pcplus4_e       => pcplus4_e,
-                    regwrite_m      => regwrite_m,      
+                    regwrite_m      => regwrite_m,
                     resultsrc_m     => resultsrc_m,
                     memwrite_m      => memwrite_m,
                     aluresult_m     => aluresult_m,
@@ -288,7 +288,7 @@ architecture rtl of datapath is
                     rd              => rd_memr,
                     rd_m            => rd_m,
                     pcplus4_m       => pcplus4_m,
-                    regwrite_w      => regwrite_w,    
+                    regwrite_w      => regwrite_w,
                     resultsrc_w     => resultsrc_w,
                     aluresult_w     => aluresult_w,
                     readdata_w      => readdata_w,
@@ -300,10 +300,10 @@ architecture rtl of datapath is
             inst_mux_3 : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
-                    port_in1    => aluresult_w, 
-                    port_in2    => readdata_w,
-                    port_in3    => pcplus4_w,
+                    a    => aluresult_w,
+                    b    => readdata_w,
+                    c   => pcplus4_w,
                     sel         => resultsrc_w,
-                    port_out    => result_w
+                    y    => result_w
                 );
     end rtl;

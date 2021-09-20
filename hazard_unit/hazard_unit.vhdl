@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 
 entity hazard_unit is
     port(
-        
+
         --inputs
         rs1_d           : in std_logic_vector(19 downto 15);
         rs2_d           : in std_logic_vector(24 downto 20);
@@ -30,7 +30,7 @@ entity hazard_unit is
 end hazard_unit;
 
 architecture rtl of hazard_unit is
-    
+
     signal lwStall : std_logic;
 
     begin
@@ -59,19 +59,18 @@ architecture rtl of hazard_unit is
                 forward_be <= "00";                                                     --no forwarding (use rf output)
             end if;
         end process;
-        
+
         --Stall when a load hazard occurs
         process(rs1_d, rs2_d, rd_e, resultsrc_e0)begin
-            
+
             if(((rs1_d = rd_e) or (rs2_d = rd_e)) and (resultsrc_e0 = '1'))then
                 lwStall <= '1';
             else
                 lwStall <= '0';
             end if;
-
             stall_f <= lwStall;
             stall_d <= lwStall;
-            
+
         end process;
 
         --Flush when a branch is taken or a load introduces a bubble
@@ -79,9 +78,13 @@ architecture rtl of hazard_unit is
             if pcsrc_e = '1' then
                 flush_d <= '1';
                 flush_e <= '1';
-            else 
+            else
                 flush_d <= '0';
                 flush_e <= lwStall;
             end if;
         end process;
+
+
+      --  stall_f <= lwStall;
+      --  stall_d <= lwStall;
 end rtl;

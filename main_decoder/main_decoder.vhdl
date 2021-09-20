@@ -39,6 +39,5 @@ architecture rtl of main_decoder is
         branch      <= controls(3);
         ALUOp       <= controls(2 downto 1);
         jump        <= controls(0);
-    
-    end rtl;
 
+    end rtl;

@@ -21,15 +21,15 @@ entity control_unit is
 end control_unit;
 
 architecture rtl of control_unit is
-    
-    signal branch   : std_logic;
+
+  
     signal ALUOp    : std_logic_vector(1 downto 0);
-    
+
     begin
         inst_maindecoder : entity work.main_decoder(rtl)
             port map(
                 op          => op,
-                branch      => branch_d, 
+                branch      => branch_d,
                 jump        => jump_d,
                 MemWrite    => memwrite_d,
                 ALUSrc      => alusrc_d,
@@ -38,16 +38,14 @@ architecture rtl of control_unit is
                 ALUOp       => ALUOp,
                 ResultSrc   => resultsrc_d
             );
-        
+
         inst_aludecoder : entity work.ALU_Decoder(rtl)
             port map(
-                op5         => op(5), 
+                op5         => op(5),
                 funct3      => funct3,
-                funct7_5    => funct7_5, 
-                ALUOp       => ALUOp, 
-                ALUControl  => alucontrol_d 
+                funct7_5    => funct7_5,
+                ALUOp       => ALUOp,
+                ALUControl  => alucontrol_d
             );
 
     end rtl;
-        
-

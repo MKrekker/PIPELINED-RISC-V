@@ -24,21 +24,20 @@ architecture rtl of reg_fd is
     signal memory : ramtype;
 
     begin
-        process(clk)begin
-
-            if rising_edge(clk) and (en = '1') then
-                if(clr = '1') then
-                    memory <= (others => (others => '0'));
-                else
-                    memory(0)   <=  rd;
-                    memory(1)   <=  pc_f;
-                    memory(2)   <=  pcplus4_f;
-                end if;
-            end if;
+        process(clk, clr, en)begin
+          if clr = '1' then
+            memory(0) <= (others => '0');
+            memory(1) <= (others => '0');
+            memory(2) <= (others => '0');
+          elsif rising_edge (clk) and en = '1' then
+            memory(0) <= rd;
+            memory(1) <= pc_f;
+            memory(2) <= pcplus4_f;
+          end if;
         end process;
 
         instr_d     <=  memory(0);
         pc_d        <=  memory(1);
         pcplus4_d   <=  memory(2);
-    
+
     end rtl;
