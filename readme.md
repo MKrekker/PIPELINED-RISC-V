@@ -28,7 +28,7 @@ Also you can compile and look on wave diagrams in GTKWave with command
  
 Last file must be **testbench** !!! 
 
-In "program" folder you can find Makefile, which you can use for transformation .asm file into the file with "hex" values. This values you can use as RISC-V instruction for your RISC-V processor
+      In "program" folder you can find Makefile, which you can use for transformation .asm file into the file with "hex" values. This values you can use as RISC-V instruction for your RISC-V processor
 
 ## References
 
