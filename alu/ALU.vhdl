@@ -27,8 +27,12 @@ architecture rtl of ALU is
                 when "010" => alu_res <= SrcA and SrcB;
                 --or
                 when "011" => alu_res <=  SrcA or SrcB;
-
+                --srl
                 when "100" => alu_res <= std_logic_vector(unsigned(SrcA) srl to_integer(unsigned(SrcB)));
+                --xor
+                when "110" => alu_res <= SrcA xor SrcB;
+                --sll
+                when "111" => alu_res <= std_logic_vector(unsigned(SrcA) sll to_integer(unsigned(SrcB)));
                 --slt
                 when "101" =>
                     if(SrcA < SrcB)then

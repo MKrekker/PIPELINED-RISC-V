@@ -14,7 +14,7 @@ entity reg_de is
         jump_d          : in std_logic;
         branch_d        : in std_logic;
         alucontrol_d    : in std_logic_vector(2 downto 0);
-        alusrc_d        : in std_logic;
+        alusrc_d        : in std_logic_vector(1 downto 0);
         rs1_d           : in std_logic_vector(19 downto 15);
         rs2_d           : in std_logic_vector(24 downto 20);
         rd1             : in std_logic_vector(31 downto 0);
@@ -23,6 +23,7 @@ entity reg_de is
         rd_d            : in std_logic_vector(11 downto 7);
         immext_d        : in std_logic_vector(31 downto 0);
         pcplus4_d       : in std_logic_vector(31 downto 0);
+        instr31_12_d    : in std_logic_vector(31 downto 12);
 
         --outputs
         regwrite_e      : out std_logic;
@@ -31,7 +32,7 @@ entity reg_de is
         jump_e          : out std_logic;
         branch_e        : out std_logic;
         alucontrol_e    : out std_logic_vector(2 downto 0);
-        alusrc_e        : out std_logic;
+        alusrc_e        : out std_logic_vector(1 downto 0);
         rd1_e           : out std_logic_vector(31 downto 0);
         rd2_e           : out std_logic_vector(31 downto 0);
         rs1_e           : out std_logic_vector(4 downto 0);
@@ -39,6 +40,7 @@ entity reg_de is
         pc_e            : out std_logic_vector(31 downto 0);
         rd_e            : buffer std_logic_vector(11 downto 7);
         immext_e        : buffer std_logic_vector(31 downto 0);
+        instr31_12_e    : out std_logic_vector(31 downto 12);
         pcplus4_e       : out std_logic_vector(31 downto 0)
     );
 end reg_de;
@@ -46,12 +48,14 @@ end reg_de;
 architecture rtl of reg_de is
 
     type ram_type_32 is array(4 downto 0) of std_logic_vector(31 downto 0);
+    type ram_type_20 is array(0 downto 0) of std_logic_vector(31 downto 12);
     type ram_type_5 is array(2 downto 0) of std_logic_vector(4 downto 0);
     type ram_type_3 is array(0 downto 0) of std_logic_vector(2 downto 0);
-    type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
-    type ram_type_1 is array(4 downto 0) of std_logic;
+    type ram_type_2 is array(1 downto 0) of std_logic_vector(1 downto 0);
+    type ram_type_1 is array(3 downto 0) of std_logic;
 
     signal memory_32    : ram_type_32;
+    signal memory_20    : ram_type_20;
     signal memory_5     : ram_type_5;
     signal memory_3     : ram_type_3;
     signal memory_2     : ram_type_2;
@@ -62,16 +66,19 @@ architecture rtl of reg_de is
           if rising_edge(clk)then
             if(clr_de = '1')then
                 memory_32   <= (others => (others => '0'));
+                memory_20   <= (others => (others => '0'));
                 memory_5    <= (others => (others => '0'));
                 memory_3    <= (others => (others => '0'));
                 memory_2    <= (others => (others => '0'));
                 memory_1    <= (others => '0');
-            else 
+            else
               memory_32(0)    <= rd1;
               memory_32(1)    <= rd2;
               memory_32(2)    <= pc_d;
               memory_32(3)    <= immext_d;
               memory_32(4)    <= pcplus4_d;
+
+              memory_20(0)    <= instr31_12_d;
 
               memory_5(0)     <= rs1_d;
               memory_5(1)     <= rs2_d;
@@ -80,12 +87,12 @@ architecture rtl of reg_de is
               memory_3(0)     <= alucontrol_d;
 
               memory_2(0)     <= resultsrc_d;
+              memory_2(1)     <= alusrc_d;
 
               memory_1(0)     <= regwrite_d;
               memory_1(1)     <= memwrite_d;
               memory_1(2)     <= jump_d;
               memory_1(3)     <= branch_d;
-              memory_1(4)     <= alusrc_d;
             end if;
           end if;
         end process;
@@ -95,6 +102,8 @@ architecture rtl of reg_de is
         immext_e        <= memory_32(3);
         pcplus4_e       <= memory_32(4);
 
+        instr31_12_e    <= memory_20(0);
+
         rs1_e           <= memory_5(0);
         rs2_e           <= memory_5(1);
         rd_e            <= memory_5(2);
@@ -102,12 +111,13 @@ architecture rtl of reg_de is
         alucontrol_e    <= memory_3(0);
 
         resultsrc_e     <= memory_2(0);
+        alusrc_e        <= memory_2(1);
 
         regwrite_e      <= memory_1(0);
         memwrite_e      <= memory_1(1);
         jump_e          <= memory_1(2);
         branch_e        <= memory_1(3);
-        alusrc_e        <= memory_1(4);
+
 
 
 

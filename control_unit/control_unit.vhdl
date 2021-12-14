@@ -15,14 +15,14 @@ entity control_unit is
         jump_d          : out std_logic;
         branch_d        : out std_logic;
         alucontrol_d    : out std_logic_vector(2 downto 0);
-        alusrc_d        : out std_logic;
+        alusrc_d        : out std_logic_vector(1 downto 0);
         immsrc_d        : out std_logic_vector(1 downto 0)
     );
 end control_unit;
 
 architecture rtl of control_unit is
 
-  
+
     signal ALUOp    : std_logic_vector(1 downto 0);
 
     begin

@@ -10,7 +10,7 @@ help:
 # common targets
 
 # make clean
-#  delete all compilation products & folder with simulation data
+#  delete all compilation products
 clean:
 	rm -f  *.hex
 
@@ -31,7 +31,7 @@ build: program.hex
 # nc                              - copyright notice will not be displayed
 # a                               - assemble only, do not simulate
 # dump .text HexText program.hex  - dump segment .text to program.hex file in HexText format
-program.hex: popcount.S
-	$(RARS)  nc a dump .text HexText program.hex popcount.S
+program.hex: test.S
+	$(RARS)  nc a dump .text HexText program.hex test.S
 
 

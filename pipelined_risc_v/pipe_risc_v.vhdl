@@ -18,7 +18,7 @@ architecture rtl of pipe_risc_v is
     signal jump_d           : std_logic := '0';
     signal branch_d         : std_logic := '0';
     signal alucontrol_d     : std_logic_vector(2 downto 0) := "000";
-    signal alusrc_d         : std_logic := '0';
+    signal alusrc_d         : std_logic_vector(1 downto 0) := "00";
     signal immsrc_d         : std_logic_vector(1 downto 0) := "00";
     signal zero             : std_logic := '0';
     signal jump_e           : std_logic := '0';

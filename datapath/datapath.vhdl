@@ -20,7 +20,7 @@ entity datapath is
         jump_d              : in std_logic;
         branch_d            : in std_logic;
         alucontrol_d        : in std_logic_vector(2 downto 0);
-        alusrc_d            : in std_logic;
+        alusrc_d            : in std_logic_vector(1 downto 0);
         forward_ae          : in std_logic_vector(1 downto 0);
         forward_be          : in std_logic_vector(1 downto 0);
 
@@ -61,7 +61,7 @@ architecture rtl of datapath is
     signal regwrite_e           : std_logic;
     signal memwrite_e           : std_logic;
     signal alucontrol_e         : std_logic_vector(2 downto 0);
-    signal alusrc_e             : std_logic;
+    signal alusrc_e             : std_logic_vector(1 downto 0);
     signal pcplus4_e            : std_logic_vector(31 downto 0);
     signal aluresult_m          : std_logic_vector(31 downto 0);
     signal forward_ae_mux_o     : std_logic_vector(31 downto 0);
@@ -81,6 +81,8 @@ architecture rtl of datapath is
     signal srcb_e               : std_logic_vector(31 downto 0);
     signal writedata_e          : std_logic_vector(31 downto 0);
     signal resultsrc_e          : std_logic_vector(1 downto 0);
+    signal instr31_12_e         : std_logic_vector(31 downto 12);
+    signal instr31_12_0         : std_logic_vector(31 downto 0);
     signal not_clk              : std_logic;
     signal not_en_pc            : std_logic;
     signal not_en_fd            : std_logic;
@@ -175,6 +177,7 @@ architecture rtl of datapath is
                 rs1_d           => instr_d(19 downto 15),
                 rs2_d           => instr_d(24 downto 20),
                 rd_d            => instr_d(11 downto 7),
+                instr31_12_d    => instr_d(31 downto 12),
                 immext_d        => immext_d,
                 pcplus4_d       => pcplus4_d,
                 regwrite_e      => regwrite_e,
@@ -187,6 +190,7 @@ architecture rtl of datapath is
                 rd1_e           => rd1_e,
                 rd2_e           => rd2_e,
                 pc_e            => pc_e,
+                instr31_12_e    => instr31_12_e,
                 rs1_e           => rs1_e,
                 rs2_e           => rs2_e,
                 rd_e            => rd_e,
@@ -203,7 +207,7 @@ architecture rtl of datapath is
                     a    => rd1_e,
                     b    => result_w,
                     c    => aluresult_m,
-                    sel         => forward_ae,
+                    sel  => forward_ae,
                     y    => forward_ae_mux_o
                 );
 
@@ -214,18 +218,21 @@ architecture rtl of datapath is
                     a    => rd2_e,
                     b    => result_w,
                     c    => aluresult_m,
-                    sel         => forward_be,
+                    sel  => forward_be,
                     y    => forward_be_mux_o
                 );
+            instr31_12_0(31 downto 12) <= instr31_12_e;
+            instr31_12_0(11 downto 0) <= (others => '0');
 
             --instantiation multiplexer 2 to 1
-            inst_mux_2 : entity work.mux_2(rtl)
+            inst_mux_3_alu_src : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
-                    port_in1    => forward_be_mux_o,
-                    port_in2    => immext_e,
+                    a           => forward_be_mux_o,
+                    b           => immext_e,
+                    c           => instr31_12_0,
                     sel         => alusrc_e,
-                    port_out    => srcb_e
+                    y           => srcb_e
                 );
 
             --instantiation adder
