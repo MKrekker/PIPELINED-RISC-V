@@ -15,9 +15,9 @@ architecture test of data_memr_tb is
 
     begin
         inst_data_memr : entity work.data_memr(rtl)
-                        port map (addr_port => addr_port, write_data => write_data, clk => clk, 
+                        port map (addr_port => addr_port, write_data => write_data, clk => clk,
                                   write_en => write_en, read_data => read_data);
-        
+
          process begin
             clk <= '1';
             wait for 5 ns;
@@ -50,15 +50,15 @@ architecture test of data_memr_tb is
             addr_port <= B"0000_1100_0111_0000_1111_0010_0110_0001";
             write_data <= B"0000_1100_0111_0000_1111_0010_0110_1111";
 
-            wait for 20 ns;
+            wait for 10 ns;
             addr_port <= B"0000_1100_0111_0000_1111_0010_0110_0010";
             write_data <= B"0000_1100_0111_0000_1111_0010_0110_1110";
-            
-            wait for 20 ns;
+
+            wait for 10 ns;
 
             write_en <= '0';
             addr_port <= B"0000_1100_0111_0000_1111_0010_0110_0001";
-            wait for 20 ns;
+            wait for 10 ns;
             addr_port <= B"0000_1100_0111_0000_1111_0010_0110_0010";
             wait;
         end process;

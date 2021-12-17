@@ -1,0 +1,93 @@
+$date
+  Thu Dec 16 23:55:16 2021
+$end
+$version
+  GHDL v0
+$end
+$timescale
+  1 fs
+$end
+$scope module standard $end
+$upscope $end
+$scope module std_logic_1164 $end
+$upscope $end
+$scope module numeric_std $end
+$upscope $end
+$scope module alu_decoder $end
+$var reg 1 ! op5 $end
+$var reg 3 " funct3[2:0] $end
+$var reg 1 # funct7_5 $end
+$var reg 2 $ aluop[1:0] $end
+$var reg 3 % alucontrol[2:0] $end
+$upscope $end
+$enddefinitions $end
+#0
+1!
+b100 "
+0#
+b11 $
+b110 %
+#5000000
+0!
+b011 "
+1#
+b--- %
+#10000000
+1!
+b100 "
+b01 $
+b001 %
+#15000000
+b111 "
+0#
+b00 $
+b000 %
+#20000000
+b000 "
+1#
+#25000000
+b010 "
+b11 $
+b101 %
+#30000000
+0!
+b001 "
+0#
+b00 $
+b000 %
+#35000000
+1!
+b10 $
+b111 %
+#40000000
+0!
+b11 $
+#45000000
+b000 "
+b10 $
+b000 %
+#50000000
+b010 "
+1#
+b11 $
+b101 %
+#55000000
+b000 "
+b01 $
+b001 %
+#60000000
+1!
+b100 "
+0#
+b10 $
+b110 %
+#65000000
+0!
+b110 "
+b011 %
+#70000000
+1!
+1#
+b01 $
+b001 %
+#75000000

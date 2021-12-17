@@ -17,9 +17,9 @@ end data_memr;
 architecture rtl of data_memr is
 
     type ram_type is array (63 downto 0) of std_logic_vector(31 downto 0);
-    
+
     signal mem : ram_type := (others => (others => '0'));
-    
+
     begin
         process(clk, write_en) begin
                 if rising_edge(clk) then
