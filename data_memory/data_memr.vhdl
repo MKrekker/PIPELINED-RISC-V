@@ -21,14 +21,17 @@ architecture rtl of data_memr is
     signal mem : ram_type := (others => (others => '0'));
 
     begin
-        process(clk, write_en) begin
+
+        process(addr_port)begin
+            read_data <= mem(to_integer(unsigned(addr_port(7 downto 2))));
+        end process;
+
+        process(clk) begin
                 if rising_edge(clk) then
                     if(write_en = '1')then
                         mem(to_integer(unsigned(addr_port(7 downto 2)))) <= write_data;
                     end if;
                 end if;
         end process;
-        process(addr_port)begin
-            read_data <= mem(to_integer(unsigned(addr_port(7 downto 2))));
-        end process;
+
     end rtl;

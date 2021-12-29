@@ -307,10 +307,10 @@ architecture rtl of datapath is
             inst_mux_3 : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
-                    a    => aluresult_w,
-                    b    => readdata_w,
-                    c   => pcplus4_w,
-                    sel         => resultsrc_w,
-                    y    => result_w
+                    a               => aluresult_w,
+                    b               => readdata_w,
+                    c               => pcplus4_w,
+                    sel             => resultsrc_w,
+                    y               => result_w
                 );
     end rtl;

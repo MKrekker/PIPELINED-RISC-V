@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1639761765" />
+    <testcase name="controlunit_tb" classname="datamem_tb" file="/home/mkrekker/Documents/PIPELINED-RISC-V/data_memory/datamem_tb.py" lineno="7" time="0.06456899642944336" sim_time_ns="2550000.000001" ratio_time="39492637.96886587" />
+  </testsuite>
+</testsuites>

@@ -26,7 +26,7 @@ architecture test of pipe_risc_v_tb is
                 reset <= '0';
                 wait for 5 ns;
 
-                for i in 1 to 100 loop
+                for i in 1 to 500 loop
                     clk <= '1';
                     wait for 5 ns;
                     clk <= '0';

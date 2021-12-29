@@ -1,0 +1,4 @@
+v 4
+file / "/home/mkrekker/Documents/PIPELINED-RISC-V/data_memory/data_memr.vhdl" "8893b1826a12e27738bcd9ec3106f7b44a06d53c" "20211217172245.443":
+  entity data_memr at 1( 0) + 0 on 11;
+  architecture rtl of data_memr at 17( 397) + 0 on 12;

@@ -31,7 +31,7 @@ build: program.hex
 # nc                              - copyright notice will not be displayed
 # a                               - assemble only, do not simulate
 # dump .text HexText program.hex  - dump segment .text to program.hex file in HexText format
-program.hex: test.S
-	$(RARS)  nc a dump .text HexText program.hex test.S
+program.hex: pe.S
+	$(RARS)  nc a dump .text HexText program.hex pe.S
 
 

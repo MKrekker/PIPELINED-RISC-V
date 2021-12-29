@@ -11,9 +11,9 @@ async def controlunit_tb(dut):
 	clock = Clock(dut.clk, 10, units="us")
 	cocotb.start_soon(clock.start())
 
-	#await RisingEdge(dut.clk)
+	await RisingEdge(dut.clk)
 
-	for i in range(255):
+	for i in range(10):
 
 		dut.addr_port.value  = random.randint(0,255)
 		dut.write_data.value = random.randint(0,255)
