@@ -1,7 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1640182456" />
-    <testcase name="adder_tb1" classname="adder_tb" file="/home/mkrekker/Documents/PIPELINED-RISC-V/adder/adder_tb.py" lineno="7" time="0.0011339187622070312" sim_time_ns="5.000001" ratio_time="4409.4878457325485" />
-    <testcase name="randomised_test" classname="adder_tb" file="/home/mkrekker/Documents/PIPELINED-RISC-V/adder/adder_tb.py" lineno="22" time="0.0028367042541503906" sim_time_ns="50.000001000000005" ratio_time="17626.08877074332" />
-  </testsuite>
-</testsuites>
