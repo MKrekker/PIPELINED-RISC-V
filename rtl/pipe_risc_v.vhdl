@@ -4,12 +4,17 @@ use ieee.numeric_std.all;
 
 entity pipe_risc_v is
     port(
-        clk : in std_logic;
-        reset : in std_logic
+        clk     : in std_logic;
+        reset   : in std_logic
     );
 end pipe_risc_v;
 
+
+
 architecture rtl of pipe_risc_v is
+
+attribute keep_hierarchy : string;
+attribute keep_hierarchy of rtl : architecture is "yes";
 
     --signals
     signal regwrite_d       : std_logic := '0';

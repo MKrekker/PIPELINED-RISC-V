@@ -23,6 +23,8 @@ architecture rtl of mux_3 is
           y <= b;
         elsif (sel = "10") then
           y <= c;
+        else
+          y <= (others => '-');
         end if;
       end process;
 end rtl;

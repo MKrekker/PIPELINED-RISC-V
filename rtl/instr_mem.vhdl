@@ -12,7 +12,7 @@ end instr_mem;
 architecture rtl of instr_mem is
 
     type romtype is array (255 downto 0) of std_logic_vector(31 downto 0);
-    signal mem: romtype;
+    signal mem: romtype := (others =>(others => '0'));
 
     begin
 

@@ -30,7 +30,8 @@ entity hazard_unit is
 end hazard_unit;
 
 architecture rtl of hazard_unit is
-
+    attribute keep_hierarchy : string;
+attribute keep_hierarchy of rtl : architecture is "yes";
     signal lwStall : std_logic;
 
     begin

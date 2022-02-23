@@ -44,6 +44,12 @@ end datapath;
 
 architecture rtl of datapath is
 
+attribute keep_hierarchy : string;
+attribute keep_hierarchy of rtl : architecture is "yes";
+
+
+
+
     --signals
     signal pcplus4_f            : std_logic_vector(31 downto 0);
     signal pctarget_e           : std_logic_vector(31 downto 0);
@@ -86,6 +92,29 @@ architecture rtl of datapath is
     signal not_clk              : std_logic;
     signal not_en_pc            : std_logic;
     signal not_en_fd            : std_logic;
+
+
+attribute dont_touch : string;
+attribute dont_touch of pcf_buf         : signal is "true";
+attribute dont_touch of pcplus4_f       : signal is "true";
+attribute dont_touch of pctarget_e      : signal is "true";
+attribute dont_touch of pcf_in          : signal is "true";
+attribute dont_touch of aluresult_w     : signal is "true";
+attribute dont_touch of readdata_w      : signal is "true";
+attribute dont_touch of pcplus4_w       : signal is "true";
+attribute dont_touch of resultsrc_w     : signal is "true";
+attribute dont_touch of result_w        : signal is "true";
+attribute dont_touch of forward_be_mux_o: signal is "true";
+attribute dont_touch of immext_e        : signal is "true";
+attribute dont_touch of instr31_12_0    : signal is "true";
+attribute dont_touch of alusrc_e        : signal is "true";
+attribute dont_touch of srcb_e          : signal is "true";
+attribute dont_touch of rd2_e           : signal is "true";
+attribute dont_touch of aluresult_m     : signal is "true";
+attribute dont_touch of forward_be      : signal is "true";
+attribute dont_touch of rd1_e           : signal is "true";
+attribute dont_touch of forward_ae      : signal is "true";
+attribute dont_touch of forward_ae_mux_o: signal is "true";
 
     begin
         --instantiation multiplexer 2 to 1

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity mux_2 is
-    generic(number : integer := 8);
+    generic(number : integer := 32);
     port(
         --inputs
         port_in1 :  in std_logic_vector(number-1 downto 0);
