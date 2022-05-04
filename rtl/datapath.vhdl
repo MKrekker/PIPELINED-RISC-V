@@ -23,7 +23,7 @@ entity datapath is
         alusrc_d            : in std_logic_vector(1 downto 0);
         forward_ae          : in std_logic_vector(1 downto 0);
         forward_be          : in std_logic_vector(1 downto 0);
-
+       -- aluresult_d         : out std_logic_vector(31 downto 0);
         --buffers
         rd_w                : buffer std_logic_vector(4 downto 0);
         regwrite_w          : buffer std_logic;
@@ -31,26 +31,24 @@ entity datapath is
         regwrite_m          : buffer std_logic;
         rd_m                : buffer std_logic_vector(4 downto 0);
         instr_d             : buffer std_logic_vector(31 downto 0);
+        aluresult_w         : buffer std_logic_vector(31 downto 0);
         --outputs
         jump_e              : out std_logic;
         branch_e            : out std_logic;
         zero_e              : out std_logic;
         rs1_e               : out std_logic_vector(4 downto 0);
         rs2_e               : out std_logic_vector(4 downto 0);
-        resultsrc_e0        : out std_logic
+        resultsrc_e0        : out std_logic;
+        data_memr_o2        : out std_logic_vector(31 downto 0)
 
     );
 end datapath;
 
 architecture rtl of datapath is
 
-attribute keep_hierarchy : string;
-attribute keep_hierarchy of rtl : architecture is "yes";
-
-
-
 
     --signals
+    signal not_clk              : std_logic;
     signal pcplus4_f            : std_logic_vector(31 downto 0);
     signal pctarget_e           : std_logic_vector(31 downto 0);
     signal pcf_in               : std_logic_vector(31 downto 0);
@@ -78,7 +76,7 @@ attribute keep_hierarchy of rtl : architecture is "yes";
     signal writedata_m          : std_logic_vector(31 downto 0);
     signal pcplus4_m            : std_logic_vector(31 downto 0);
     signal resultsrc_w          : std_logic_vector(1 downto 0);
-    signal aluresult_w          : std_logic_vector(31 downto 0);
+    --signal aluresult_w          : std_logic_vector(31 downto 0);
     signal readdata_w           : std_logic_vector(31 downto 0);
     signal pcplus4_w            : std_logic_vector(31 downto 0);
     signal rd_memr              : std_logic_vector(31 downto 0);
@@ -89,34 +87,29 @@ attribute keep_hierarchy of rtl : architecture is "yes";
     signal resultsrc_e          : std_logic_vector(1 downto 0);
     signal instr31_12_e         : std_logic_vector(31 downto 12);
     signal instr31_12_0         : std_logic_vector(31 downto 0);
-    signal not_clk              : std_logic;
+    --signal not_clk              : std_logic;
     signal not_en_pc            : std_logic;
     signal not_en_fd            : std_logic;
+    signal count	            : natural range 0 to (2**10 - 1);
+    signal addr_b               : std_logic_vector(9 downto 0);
+    signal rf_addr_read1        : std_logic_vector(9 downto 0);
+    signal rf_addr_read2        : std_logic_vector(9 downto 0);
+    signal rf_addr_write        : std_logic_vector(9 downto 0);
+    
 
-
-attribute dont_touch : string;
-attribute dont_touch of pcf_buf         : signal is "true";
-attribute dont_touch of pcplus4_f       : signal is "true";
-attribute dont_touch of pctarget_e      : signal is "true";
-attribute dont_touch of pcf_in          : signal is "true";
-attribute dont_touch of aluresult_w     : signal is "true";
-attribute dont_touch of readdata_w      : signal is "true";
-attribute dont_touch of pcplus4_w       : signal is "true";
-attribute dont_touch of resultsrc_w     : signal is "true";
-attribute dont_touch of result_w        : signal is "true";
-attribute dont_touch of forward_be_mux_o: signal is "true";
-attribute dont_touch of immext_e        : signal is "true";
-attribute dont_touch of instr31_12_0    : signal is "true";
-attribute dont_touch of alusrc_e        : signal is "true";
-attribute dont_touch of srcb_e          : signal is "true";
-attribute dont_touch of rd2_e           : signal is "true";
-attribute dont_touch of aluresult_m     : signal is "true";
-attribute dont_touch of forward_be      : signal is "true";
-attribute dont_touch of rd1_e           : signal is "true";
-attribute dont_touch of forward_ae      : signal is "true";
-attribute dont_touch of forward_ae_mux_o: signal is "true";
-
+        attribute keep_hierarchy : string;
+        attribute keep_hierarchy of inst_mux : label is "yes";
+        attribute keep_hierarchy of inst_instr_mem : label is "yes";
+        attribute keep_hierarchy of inst_pcplus4 : label is "yes";
+        attribute keep_hierarchy of inst_mux_3_src_ae : label is "yes";
+        attribute keep_hierarchy of inst_mux_3_src_be : label is "yes";
+        attribute keep_hierarchy of inst_mux_3_alu_src : label is "yes";
+        
+        attribute MARK_DEBUG : string;
+        attribute MARK_DEBUG of aluresult_d : signal is "true";
+        --attribute MARK_DEBUG of data_memr_o2 : signal is "true";
     begin
+        
         --instantiation multiplexer 2 to 1
         inst_mux : entity work.mux_2(rtl)
             generic map(32)
@@ -168,6 +161,7 @@ attribute dont_touch of forward_ae_mux_o: signal is "true";
                 pcplus4_d   => pcplus4_d
             );
         --instantiation register file
+        not_clk <= not clk;
         inst_reg_file : entity work.reg_file(rtl)
             port map(
                 read_port_addr1     => instr_d(19 downto 15),
@@ -175,7 +169,7 @@ attribute dont_touch of forward_ae_mux_o: signal is "true";
                 write_port_addr     => rd_w,
                 write_data          => result_w,
                 write_en            => regwrite_w,
-                clk                 => clk,
+                clk                 => not_clk,
                 read_data1          => rd1,
                 read_data2          => rd2
             );
@@ -307,13 +301,26 @@ attribute dont_touch of forward_ae_mux_o: signal is "true";
             --instantiation data memory
             inst_data_memr : entity work.data_memr(rtl)
                 port map(
-                    addr_port       => aluresult_m,
-                    write_data      => writedata_m,
                     clk             => clk,
-                    write_en        => memwrite_m,
-                    read_data       => rd_memr
+                    addr_a	        => aluresult_m(9 downto 0),
+                    addr_b	        => addr_b, 
+                    data_a	        => writedata_m,
+                    data_b	        => writedata_m,
+                    en_a 	        => '1',
+                    we_a 	        => memwrite_m,
+                    en_b            => '1',		        
+                    we_b            => '0',	             
+                    q_a             => rd_memr,         
+                    q_b             => data_memr_o2
                 );
-
+                
+            process(clk)begin
+                if rising_edge(clk)then
+                    count <= count + 1;
+                    addr_b <= std_logic_vector(to_unsigned(count, addr_b'length));
+                end if;
+            end process;
+            
             --instantiation Register between memory and writeback
             inst_reg_mw : entity work.reg_mw(rtl)
                 port map(

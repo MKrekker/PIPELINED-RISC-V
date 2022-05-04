@@ -15,13 +15,15 @@ end pc;
 
 architecture rtl of pc is
 begin
-  process (clk, reset, en)
+  process (clk)
   begin
-    if reset = '1' then
-      PC_cur <= (others => '0');
-    else if rising_edge(clk) and en = '1' then
-      PC_cur <= PCNext;
+    if rising_edge(clk)then
+        if reset = '1' then
+            PC_cur <= (others => '0');
+        else if en = '1' then
+            PC_cur <= PCNext;
+        end if;
     end if;
   end if;
-end process;
+ end process;
 end rtl;

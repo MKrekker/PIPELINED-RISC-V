@@ -20,24 +20,44 @@ end reg_fd;
 
 architecture rtl of reg_fd is
 
-    type ramtype is array (2 downto 0) of std_logic_vector(31 downto 0);
-    signal memory : ramtype;
+    --type ramtype is array (2 downto 0) of std_logic_vector(31 downto 0);
+    signal memory_0 : std_logic_vector(31 downto 0);
+    signal memory_1 : std_logic_vector(31 downto 0);
+    signal memory_2 : std_logic_vector(31 downto 0);
 
     begin
-        process(clk, clr, en)begin
-          if clr = '1' then
-            memory(0) <= (others => '0');
-            memory(1) <= (others => '0');
-            memory(2) <= (others => '0');
-          elsif rising_edge (clk) and en = '1' then
-            memory(0) <= rd;
-            memory(1) <= pc_f;
-            memory(2) <= pcplus4_f;
-          end if;
+        process(clk)begin
+            if rising_edge(clk)then
+                if clr = '1' then
+                    memory_0 <= (others => '0');
+                elsif en = '1' then
+                    memory_0 <= rd;
+                end if;
+            end if;
+        end process;
+        
+        process(clk)begin
+            if rising_edge(clk)then
+                if clr = '1' then
+                    memory_1 <= (others => '0');
+                elsif en = '1' then
+                    memory_1 <= pc_f;
+                end if;
+            end if;
+        end process;
+        
+        process(clk)begin
+            if rising_edge(clk)then
+                if clr = '1' then
+                    memory_2 <= (others => '0');
+                elsif en = '1' then
+                    memory_2 <= pcplus4_f;
+                end if;
+            end if;
         end process;
 
-        instr_d     <=  memory(0);
-        pc_d        <=  memory(1);
-        pcplus4_d   <=  memory(2);
+        instr_d     <=  memory_0;
+        pc_d        <=  memory_1;
+        pcplus4_d   <=  memory_2;
 
     end rtl;

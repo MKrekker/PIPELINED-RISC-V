@@ -5,7 +5,9 @@ use ieee.numeric_std.all;
 entity pipe_risc_v is
     port(
         clk     : in std_logic;
-        reset   : in std_logic
+        reset   : in std_logic;
+        data_memr_o2 : out std_logic_vector(31 downto 0);
+        aluresult_w  : out std_logic_vector(31 downto 0)
     );
 end pipe_risc_v;
 
@@ -17,6 +19,7 @@ attribute keep_hierarchy : string;
 attribute keep_hierarchy of rtl : architecture is "yes";
 
     --signals
+    --signal data_memr_o2     :  std_logic_vector(31 downto 0);
     signal regwrite_d       : std_logic := '0';
     signal resultsrc_d      : std_logic_vector(1 downto 0) := "00";
     signal memwrite_d       : std_logic := '0';
@@ -45,12 +48,22 @@ attribute keep_hierarchy of rtl : architecture is "yes";
     signal rd_w             : std_logic_vector(4 downto 0) := "00000";
     signal instr_d_o        : std_logic_vector(31 downto 0) := (others => '0');
 
-
+   --attribute MARK_DEBUG : string;
+   --attribute MARK_DEBUG of data_memr_o2 : signal is "true";
+    
+--    component vio_rst
+--            port(
+--                clk : in std_logic;
+--                probe_out0 : out std_logic_vector(0 downto 0)
+--            );
+--         end component;
 
     begin
+        
         --instantiation datapath
         inst_datapath : entity work.datapath(rtl)
             port map(
+                aluresult_w         => aluresult_w,
                 forward_ae          => forward_ae,
                 forward_be          => forward_be,
                 en_pc               => en_pc,
@@ -79,7 +92,8 @@ attribute keep_hierarchy of rtl : architecture is "yes";
                 rs1_e               => rs1_e,
                 rs2_e               => rs2_e,
                 regwrite_w          => regwrite_w,
-                rd_e                => rd_e
+                rd_e                => rd_e,
+                data_memr_o2        => data_memr_o2
             );
 
         pcsrc_e <= (branch_e and zero) or jump_e ;

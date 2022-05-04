@@ -3,34 +3,57 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity data_memr is
-    port(
-        --inputs
-        addr_port   : in std_logic_vector(31 downto 0);
-        write_data  : in std_logic_vector(31 downto 0);
-        clk         : in std_logic;
-        write_en    : in std_logic;
-        --output
-        read_data   : out std_logic_vector(31 downto 0)
+    generic
+    (
+        DATA_WIDTH : natural := 32;
+        ADDR_WIDTH : natural := 10
+    );
+    port
+    (
+        clk     : in std_logic;
+        addr_a  : in std_logic_vector(ADDR_WIDTH-1 downto 0);
+        addr_b  : in std_logic_vector(ADDR_WIDTH-1 downto 0);
+        data_a  : in std_logic_vector(DATA_WIDTH-1 downto 0);
+        data_b  : in std_logic_vector(DATA_WIDTH-1 downto 0);
+        en_a    : in std_logic;
+        we_a    : in std_logic;
+        en_b    : in std_logic;
+        we_b    : in std_logic;
+        q_a     : out std_logic_vector(DATA_WIDTH-1 downto 0);
+        q_b     : out std_logic_vector(DATA_WIDTH-1 downto 0)
     );
 end data_memr;
 
 architecture rtl of data_memr is
-    
-    type ram_type is array (63 downto 0) of std_logic_vector(31 downto 0);
-    signal mem : ram_type;
+    type ram_type is array((2**ADDR_WIDTH)-1 downto 0) of std_logic_vector(DATA_WIDTH-1 downto 0);
+    shared variable ram : ram_type;
+    signal ram_data_a : std_logic_vector(DATA_WIDTH-1 downto 0) ;
+    signal ram_data_b : std_logic_vector(DATA_WIDTH-1 downto 0) ;
+begin
 
-    begin
-
-        process(addr_port)begin
-            read_data <= mem(to_integer(unsigned(addr_port(31 downto 2))));
-        end process;
-
-        process(clk) begin
-                if rising_edge(clk) then
-                    if(write_en = '1')then
-                        mem(to_integer(unsigned(addr_port(31 downto 2)))) <= write_data;
-                    end if;
+    process(clk)begin
+        if clk'event and clk='1' then
+            if en_a = '1' then
+                ram_data_a <= ram(to_integer(unsigned(addr_a)));
+                if we_a = '1' then
+                    ram(to_integer(unsigned(addr_a))) := data_a;
                 end if;
-        end process;
+            end if;
+        end if;
+    end process;
 
-    end rtl;
+    process(clk)begin
+        if clk'event and clk='1' then
+            if en_b = '1' then
+                ram_data_b <= ram(to_integer(unsigned(addr_b)));
+                if we_b = '1' then
+                    ram(to_integer(unsigned(addr_b))) := data_b;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    q_a <= ram_data_a;
+    q_b <= ram_data_b;
+
+end rtl;

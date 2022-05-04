@@ -20,31 +20,31 @@ architecture rtl of ALU is
         process(SrcA, SrcB, ALUControl)begin
             case ALUControl is
                 --add
-                when "000" => alu_res <= std_logic_vector(unsigned(SrcA) + unsigned(SrcB));
+                when "000" => ALUResult <= std_logic_vector(unsigned(SrcA) + unsigned(SrcB));
                 --sub
-                when "001" => alu_res <= std_logic_vector(unsigned(SrcA) - unsigned(SrcB));
+                when "001" => ALUResult <= std_logic_vector(unsigned(SrcA) - unsigned(SrcB));
                 --and
-                when "010" => alu_res <= SrcA and SrcB;
+                when "010" => ALUResult <= SrcA and SrcB;
                 --or
-                when "011" => alu_res <=  SrcA or SrcB;
+                when "011" => ALUResult <=  SrcA or SrcB;
                 --srl
-                when "100" => alu_res <= std_logic_vector(unsigned(SrcA) srl to_integer(unsigned(SrcB)));
+                when "100" => ALUResult <= std_logic_vector(unsigned(SrcA) srl to_integer(unsigned(SrcB)));
                 --xor
-                when "110" => alu_res <= SrcA xor SrcB;
+                when "110" => ALUResult <= SrcA xor SrcB;
                 --sll
-                when "111" => alu_res <= std_logic_vector(unsigned(SrcA) sll to_integer(unsigned(SrcB)));
+                when "111" => ALUResult <= std_logic_vector(unsigned(SrcA) sll to_integer(unsigned(SrcB)));
                 --slt
                 when "101" =>
                     if(SrcA < SrcB)then
-                        alu_res <= x"00000001";
+                        ALUResult <= x"00000001";
                     else
-                    alu_res <= x"00000000";
+                    ALUResult <= x"00000000";
                     end if;
-                when others => alu_res <= (others => 'U');
+                when others => ALUResult <= (others => 'U');
                 end case;
             end process;
 
-            Zero <= '1' when alu_res = x"00000000" else '0';
+            Zero <= '1' when ALUResult = x"00000000" else '0';
 
-            ALUResult <= alu_res;
+            --ALUResult <= alu_res;
     end rtl;

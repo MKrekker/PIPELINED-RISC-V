@@ -27,7 +27,7 @@ architecture rtl of reg_file is
     begin
 
         Write_Data_Proc : process(clk)begin
-            if falling_edge(clk) then
+            if rising_edge(clk) then
                 if write_port_addr /= "00000" and write_en = '1' then
                     mem_1(to_integer(unsigned(write_port_addr))) <= write_data;
                 end if;
