@@ -30,8 +30,7 @@ entity hazard_unit is
 end hazard_unit;
 
 architecture rtl of hazard_unit is
-    attribute keep_hierarchy : string;
-attribute keep_hierarchy of rtl : architecture is "yes";
+
     signal lwStall : std_logic;
 
     begin
@@ -76,16 +75,14 @@ attribute keep_hierarchy of rtl : architecture is "yes";
 
         --Flush when a branch is taken or a load introduces a bubble
         process(pcsrc_e, lwStall)begin
-            if pcsrc_e = '1' then
-                flush_d <= '1';
-                flush_e <= '1';
-            else
-                flush_d <= '0';
-                flush_e <= lwStall;
-            end if;
+            -- if pcsrc_e = '1' then
+            --     flush_d <= '1';
+            --     flush_e <= '1';
+            -- else
+            --     flush_d <= '0';
+            --     flush_e <= lwStall;
+            -- end if;
+            flush_d <= pcsrc_e;
+            flush_e <= lwStall or pcsrc_e;
         end process;
-
-
-      --  stall_f <= lwStall;
-      --  stall_d <= lwStall;
 end rtl;

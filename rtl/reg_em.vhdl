@@ -26,71 +26,17 @@ entity reg_em is
 end reg_em;
 
 architecture rtl of reg_em is
-
-    type ram_type_32 is array(2 downto 0) of std_logic_vector(31 downto 0);
-    type ram_type_5 is array(0 downto 0 ) of std_logic_vector(4 downto 0);
-    type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
-
-    signal memory_32_0    : std_logic_vector(31 downto 0);
-    signal memory_32_1    : std_logic_vector(31 downto 0);
-    signal memory_32_2    : std_logic_vector(31 downto 0);
-    signal memory_5     : std_logic_vector(4 downto 0);
-    signal memory_2     : std_logic_vector(1 downto 0);
-    signal memory_1_1   : std_logic;
-    signal memory_1_2   : std_logic;
-
-
     begin
         process(clk)begin
             if rising_edge(clk)then
-                memory_32_0    <= aluresult;
+                aluresult_m    <= aluresult;
+                writedata_m     <= writedata_e;
+                pcplus4_m     <= pcplus4_e;
+                rd_m        <= rd_e;
+                resultsrc_m        <= resultsrc_e;
+                regwrite_m      <= regwrite_e;
+                memwrite_m      <= memwrite_e;
             end if;
         end process;
-        
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_32_1    <= writedata_e;
-            end if;
-        end process;
-        
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_32_2    <= pcplus4_e;
-            end if;
-        end process;
-        
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_5     <= rd_e;
-            end if;
-        end process;
-        
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_2     <= resultsrc_e;
-            end if;
-        end process;
-        
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_1_1     <= regwrite_e;
-            end if;
-        end process;
-        process(clk)begin
-            if rising_edge(clk)then
-                memory_1_2     <= memwrite_e;
-            end if;
-        end process;
-
-        aluresult_m     <= memory_32_0;
-        writedata_m     <= memory_32_1;
-        pcplus4_m       <= memory_32_2; 
-        
-        rd_m            <= memory_5;
-
-        resultsrc_m     <= memory_2;
-
-        regwrite_m      <= memory_1_1;
-        memwrite_m      <= memory_1_2;
 
     end rtl;

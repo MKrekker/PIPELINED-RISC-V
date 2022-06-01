@@ -21,8 +21,6 @@ entity control_unit is
 end control_unit;
 
 architecture rtl of control_unit is
-attribute keep_hierarchy : string;
-attribute keep_hierarchy of rtl : architecture is "yes";
 
     signal ALUOp    : std_logic_vector(1 downto 0);
 

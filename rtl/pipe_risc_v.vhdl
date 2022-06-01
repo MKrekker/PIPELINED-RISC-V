@@ -5,9 +5,7 @@ use ieee.numeric_std.all;
 entity pipe_risc_v is
     port(
         clk     : in std_logic;
-        reset   : in std_logic;
-        data_memr_o2 : out std_logic_vector(31 downto 0);
-        aluresult_w  : out std_logic_vector(31 downto 0)
+        reset   : in std_logic
     );
 end pipe_risc_v;
 
@@ -15,48 +13,41 @@ end pipe_risc_v;
 
 architecture rtl of pipe_risc_v is
 
-attribute keep_hierarchy : string;
-attribute keep_hierarchy of rtl : architecture is "yes";
+--attribute keep_hierarchy : string;
+--attribute keep_hierarchy of rtl : architecture is "yes";
 
-    --signals
+    signal aluresult_w    : std_logic_vector(31 downto 0);
     --signal data_memr_o2     :  std_logic_vector(31 downto 0);
-    signal regwrite_d       : std_logic := '0';
-    signal resultsrc_d      : std_logic_vector(1 downto 0) := "00";
-    signal memwrite_d       : std_logic := '0';
-    signal jump_d           : std_logic := '0';
-    signal branch_d         : std_logic := '0';
-    signal alucontrol_d     : std_logic_vector(2 downto 0) := "000";
-    signal alusrc_d         : std_logic_vector(1 downto 0) := "00";
-    signal immsrc_d         : std_logic_vector(1 downto 0) := "00";
-    signal zero             : std_logic := '0';
-    signal jump_e           : std_logic := '0';
-    signal branch_e         : std_logic := '0';
-    signal pcsrc_e          : std_logic := '0';
-    signal forward_ae       : std_logic_vector(1 downto 0) := "00";
-    signal forward_be       : std_logic_vector(1 downto 0) := "00";
-    signal en_pc            : std_logic := '0';
-    signal en_fd            : std_logic := '0';
-    signal clr_fd           : std_logic := '0';
-    signal clr_de           : std_logic := '0';
-    signal rd_e             : std_logic_vector(4 downto 0) := "00000";
-    signal resultsrc_e0     : std_logic := '0';
-    signal rs1_e            : std_logic_vector(4 downto 0) := "00000";
-    signal rs2_e            : std_logic_vector(4 downto 0) := "00000";
-    signal regwrite_m       : std_logic := '0';
-    signal regwrite_w       : std_logic := '0';
-    signal rd_m             : std_logic_vector(4 downto 0) := "00000";
-    signal rd_w             : std_logic_vector(4 downto 0) := "00000";
-    signal instr_d_o        : std_logic_vector(31 downto 0) := (others => '0');
 
-   --attribute MARK_DEBUG : string;
-   --attribute MARK_DEBUG of data_memr_o2 : signal is "true";
-    
---    component vio_rst
---            port(
---                clk : in std_logic;
---                probe_out0 : out std_logic_vector(0 downto 0)
---            );
---         end component;
+    signal regwrite_d       : std_logic ;
+    signal resultsrc_d      : std_logic_vector(1 downto 0);
+    signal memwrite_d       : std_logic ;
+    signal jump_d           : std_logic ;
+    signal branch_d         : std_logic ;
+    signal alucontrol_d     : std_logic_vector(2 downto 0) ;
+    signal alusrc_d         : std_logic_vector(1 downto 0) ;
+    signal immsrc_d         : std_logic_vector(1 downto 0) ;
+    signal zero             : std_logic ;
+    signal jump_e           : std_logic ;
+    signal branch_e         : std_logic ;
+    signal pcsrc_e          : std_logic ;
+    signal forward_ae       : std_logic_vector(1 downto 0);
+    signal forward_be       : std_logic_vector(1 downto 0) ;
+    signal en_pc            : std_logic ;
+    signal en_fd            : std_logic ;
+    signal clr_fd           : std_logic ;
+    signal clr_de           : std_logic ;
+    signal rd_e             : std_logic_vector(4 downto 0) ;
+    signal resultsrc_e0     : std_logic ;
+    signal rs1_e            : std_logic_vector(4 downto 0) ;
+    signal rs2_e            : std_logic_vector(4 downto 0) ;
+    signal regwrite_m       : std_logic ;
+    signal regwrite_w       : std_logic ;
+    signal rd_m             : std_logic_vector(4 downto 0) ;
+    signal rd_w             : std_logic_vector(4 downto 0) ;
+    signal instr_d_o        : std_logic_vector(31 downto 0);
+
+   
 
     begin
         
@@ -92,8 +83,7 @@ attribute keep_hierarchy of rtl : architecture is "yes";
                 rs1_e               => rs1_e,
                 rs2_e               => rs2_e,
                 regwrite_w          => regwrite_w,
-                rd_e                => rd_e,
-                data_memr_o2        => data_memr_o2
+                rd_e                => rd_e
             );
 
         pcsrc_e <= (branch_e and zero) or jump_e ;

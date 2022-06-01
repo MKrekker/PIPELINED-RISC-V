@@ -179,7 +179,10 @@ substract:     add  x10, zero, t0
                addi  t0, x10, -32
                add t5, t5, t0
                 
-result1:       blt t5, x13, result0
+result1:       blt  t5, x13, result0
+	       addi zero,zero, 0
+	       addi zero,zero, 0
+	       addi zero,zero, 0
 	       addi t4, zero, 1
 	       jal end               
                

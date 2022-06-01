@@ -23,7 +23,7 @@ entity datapath is
         alusrc_d            : in std_logic_vector(1 downto 0);
         forward_ae          : in std_logic_vector(1 downto 0);
         forward_be          : in std_logic_vector(1 downto 0);
-       -- aluresult_d         : out std_logic_vector(31 downto 0);
+       -- aluresult_e         : out std_logic_vector(31 downto 0);
         --buffers
         rd_w                : buffer std_logic_vector(4 downto 0);
         regwrite_w          : buffer std_logic;
@@ -38,8 +38,7 @@ entity datapath is
         zero_e              : out std_logic;
         rs1_e               : out std_logic_vector(4 downto 0);
         rs2_e               : out std_logic_vector(4 downto 0);
-        resultsrc_e0        : out std_logic;
-        data_memr_o2        : out std_logic_vector(31 downto 0)
+        resultsrc_e0        : out std_logic
 
     );
 end datapath;
@@ -70,7 +69,7 @@ architecture rtl of datapath is
     signal aluresult_m          : std_logic_vector(31 downto 0);
     signal forward_ae_mux_o     : std_logic_vector(31 downto 0);
     signal forward_be_mux_o     : std_logic_vector(31 downto 0);
-    signal aluresult_d          : std_logic_vector(31 downto 0);
+    signal aluresult_e          : std_logic_vector(31 downto 0);
     signal resultsrc_m          : std_logic_vector(1 downto 0);
     signal memwrite_m           : std_logic;
     signal writedata_m          : std_logic_vector(31 downto 0);
@@ -97,16 +96,16 @@ architecture rtl of datapath is
     signal rf_addr_write        : std_logic_vector(9 downto 0);
     
 
-        attribute keep_hierarchy : string;
-        attribute keep_hierarchy of inst_mux : label is "yes";
-        attribute keep_hierarchy of inst_instr_mem : label is "yes";
-        attribute keep_hierarchy of inst_pcplus4 : label is "yes";
-        attribute keep_hierarchy of inst_mux_3_src_ae : label is "yes";
-        attribute keep_hierarchy of inst_mux_3_src_be : label is "yes";
-        attribute keep_hierarchy of inst_mux_3_alu_src : label is "yes";
+        -- attribute keep_hierarchy : string;
+        -- attribute keep_hierarchy of inst_mux : label is "yes";
+        -- attribute keep_hierarchy of inst_instr_mem : label is "yes";
+        -- attribute keep_hierarchy of inst_pcplus4 : label is "yes";
+        -- attribute keep_hierarchy of inst_mux_3_src_ae : label is "yes";
+        -- attribute keep_hierarchy of inst_mux_3_src_be : label is "yes";
+        -- attribute keep_hierarchy of inst_mux_3_alu_src : label is "yes";
         
-        attribute MARK_DEBUG : string;
-        attribute MARK_DEBUG of aluresult_d : signal is "true";
+        -- attribute MARK_DEBUG : string;
+        -- attribute MARK_DEBUG of aluresult_e : signal is "true";
         --attribute MARK_DEBUG of data_memr_o2 : signal is "true";
     begin
         
@@ -114,10 +113,10 @@ architecture rtl of datapath is
         inst_mux : entity work.mux_2(rtl)
             generic map(32)
             port map(
-                port_in1    => pcplus4_f,
-                port_in2    => pctarget_e,
-                sel         => pcsrc_e,
-                port_out    => pcf_in
+                a    => pcplus4_f,
+                b    => pctarget_e,
+                sel  => pcsrc_e,
+                y    => pcf_in
             );
 
 
@@ -247,7 +246,7 @@ architecture rtl of datapath is
             instr31_12_0(31 downto 12) <= instr31_12_e;
             instr31_12_0(11 downto 0) <= (others => '0');
 
-            --instantiation multiplexer 2 to 1
+            --instantiation multiplexer 3 to 1
             inst_mux_3_alu_src : entity work.mux_3(rtl)
                 generic map(32)
                 port map(
@@ -274,7 +273,7 @@ architecture rtl of datapath is
                     SrcB            => srcb_e,
                     ALUControl      => alucontrol_e,
                     Zero            => zero_e,
-                    ALUResult       => aluresult_d
+                    ALUResult       => aluresult_e
                 );
 
             --instantiation Register between execute and memory
@@ -285,7 +284,7 @@ architecture rtl of datapath is
                     regwrite_e      => regwrite_e,
                     resultsrc_e     => resultsrc_e,
                     memwrite_e      => memwrite_e,
-                    aluresult       => aluresult_d,
+                    aluresult       => aluresult_e,
                     writedata_e     => writedata_e,
                     rd_e            => rd_e,
                     pcplus4_e       => pcplus4_e,
@@ -302,24 +301,12 @@ architecture rtl of datapath is
             inst_data_memr : entity work.data_memr(rtl)
                 port map(
                     clk             => clk,
-                    addr_a	        => aluresult_m(9 downto 0),
-                    addr_b	        => addr_b, 
-                    data_a	        => writedata_m,
-                    data_b	        => writedata_m,
-                    en_a 	        => '1',
-                    we_a 	        => memwrite_m,
-                    en_b            => '1',		        
-                    we_b            => '0',	             
-                    q_a             => rd_memr,         
-                    q_b             => data_memr_o2
+                    memwrite_m      => memwrite_m,
+                    rw_addr         => aluresult_m,
+                    w_data          => writedata_m,
+                    read_data_m     => rd_memr 
                 );
                 
-            process(clk)begin
-                if rising_edge(clk)then
-                    count <= count + 1;
-                    addr_b <= std_logic_vector(to_unsigned(count, addr_b'length));
-                end if;
-            end process;
             
             --instantiation Register between memory and writeback
             inst_reg_mw : entity work.reg_mw(rtl)

@@ -21,10 +21,10 @@ architecture test of pipe_risc_v_tb is
                 -- reset
                 clk   <= '1';
                 reset <= '1';
-                wait for 5 ns;
+                wait for 1 ns;
                 clk   <= '0';
                 reset <= '0';
-                wait for 5 ns;
+                wait for 1 ns;
 
                 for i in 1 to 604 loop
                     clk <= '1';

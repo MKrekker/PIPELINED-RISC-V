@@ -3,11 +3,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity adder is
-    generic(numberbits_b : integer := 32);
+    generic(WIDTH : integer := 32);
     port(
         --inputs
         a_in    : in std_logic_vector(31 downto 0);
-        b_in    : in std_logic_vector(numberbits_b-1 downto 0);
+        b_in    : in std_logic_vector(WIDTH-1 downto 0);
         --output
         c_out   : out std_logic_vector(31 downto 0)
     );

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity ALU_Decoder is
+entity alu_decoder is
     port(
         op5 : in std_logic;
         funct3 : in std_logic_vector(2 downto 0);
@@ -10,14 +10,14 @@ entity ALU_Decoder is
         ALUOp : in std_logic_vector(1 downto 0);
         ALUControl : out std_logic_vector(2 downto 0)
     );
-end ALU_Decoder;
+end alu_decoder;
 
-architecture rtl of ALU_Decoder is
+architecture rtl of alu_decoder is
     begin
         process(op5, funct3, funct7_5, ALUOp) begin
             case ALUOp is
                 when "00" => ALUControl <= "000"; --add
-                when "01" => ALUControl <= "101"; --blt
+                when "01" => ALUControl <= "001"; --sub
                 when others => case funct3 is
                             when "000" => if ((op5 and funct7_5) = '1') then
                                                 ALUControl <= "001"; --sub

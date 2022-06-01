@@ -46,211 +46,45 @@ entity reg_de is
 end reg_de;
 
 architecture rtl of reg_de is
-
-    --type ram_type_32 is array(4 downto 0) of std_logic_vector(31 downto 0);
-    --type ram_type_20 is array(0 downto 0) of std_logic_vector(31 downto 12);
-    --type ram_type_5 is array(2 downto 0) of std_logic_vector(4 downto 0);
-    --type ram_type_3 is array(0 downto 0) of std_logic_vector(2 downto 0);
-    --type ram_type_2 is array(1 downto 0) of std_logic_vector(1 downto 0);
-    --type ram_type_1 is array(3 downto 0) of std_logic;
-
-    signal memory_32_0    : std_logic_vector(31 downto 0);
-    signal memory_32_1    : std_logic_vector(31 downto 0);
-    signal memory_32_2    : std_logic_vector(31 downto 0);
-    signal memory_32_3    : std_logic_vector(31 downto 0);
-    signal memory_32_4    : std_logic_vector(31 downto 0);
-    signal memory_20      : std_logic_vector(19 downto 0);
-    signal memory_5_0     : std_logic_vector(4 downto 0);
-    signal memory_5_1     : std_logic_vector(4 downto 0);
-    signal memory_5_2     : std_logic_vector(4 downto 0);
-    signal memory_3       : std_logic_vector(2 downto 0);
-    signal memory_2_0     : std_logic_vector(1 downto 0);
-    signal memory_2_1     : std_logic_vector(1 downto 0);
-    signal memory_1_0     : std_logic;
-    signal memory_1_1     : std_logic;
-    signal memory_1_2     : std_logic;
-    signal memory_1_3     : std_logic;
     begin
         process(clk) begin
-          if rising_edge(clk)then
+         if rising_edge(clk)then  
             if(clr_de = '1')then
-                memory_32_0   <= (others => '0');
+                rd1_e           <= (others => '0');
+                rd2_e           <= (others => '0');
+                pc_e            <= (others => '0');
+                immext_e        <= (others => '0');
+                pcplus4_e       <= (others => '0');
+                instr31_12_e    <= (others => '0');
+                rs1_e           <= (others => '0');
+                rs2_e           <= (others => '0');
+                rd_e            <= (others => '0');
+                alucontrol_e    <= (others => '0');
+                resultsrc_e     <= (others => '0');
+                alusrc_e        <= (others => '0');
+                regwrite_e      <= '0';
+                memwrite_e      <= '0';
+                jump_e          <= '0';
+                branch_e        <= '0';
             else
-              memory_32_0    <= rd1;
-            end if;
-          end if;
-        end process;
-       
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_32_1   <= (others => '0');
-            else
-              memory_32_1    <= rd2;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_32_2   <= (others => '0');
-            else
-              memory_32_2    <= pc_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_32_3   <= (others => '0');
-            else
-              memory_32_3    <= immext_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_32_4   <= (others => '0');
-            else
-              memory_32_4    <= pcplus4_d;
+              rd1_e         <= rd1;
+              rd2_e         <= rd2;
+              pc_e          <= pc_d;
+              immext_e      <= immext_d;
+              pcplus4_e     <= pcplus4_d;
+              instr31_12_e  <= instr31_12_d;
+              rs1_e         <= rs1_d;
+              rs2_e         <= rs2_d;
+              rd_e          <= rd_d;
+              alucontrol_e  <= alucontrol_d;
+              resultsrc_e   <= resultsrc_d;
+              alusrc_e      <= alusrc_d;
+              regwrite_e    <= regwrite_d;
+              memwrite_e    <= memwrite_d;
+              jump_e        <= jump_d;
+              branch_e      <= branch_d;
             end if;
           end if;
         end process;
         
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_20   <= (others => '0');
-            else
-              memory_20    <= instr31_12_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_5_0    <= (others => '0');
-            else
-              memory_5_0     <= rs1_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_5_1    <= (others => '0');
-            else
-              memory_5_1     <= rs2_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_5_2    <= (others => '0');
-            else
-              memory_5_2     <= rd_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_3    <= (others => '0');
-            else
-                memory_3     <= alucontrol_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_2_0    <= (others => '0');
-            else
-              memory_2_0     <= resultsrc_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin                                 
-          if rising_edge(clk)then                          
-            if(clr_de = '1')then                           
-                memory_2_1    <= (others => '0');
-            else           
-              memory_2_1     <= alusrc_d;                 
-            end if;                                        
-          end if;                                          
-        end process;                                       
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_1_0    <= '0';
-            else
-              memory_1_0     <= regwrite_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-                memory_1_1    <= '0';
-            else
-              memory_1_1     <= memwrite_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-              memory_1_2     <= '0';
-            else
-              memory_1_2     <= jump_d;
-            end if;
-          end if;
-        end process;
-        
-        process(clk) begin
-          if rising_edge(clk)then
-            if(clr_de = '1')then
-              memory_1_3    <= '0';
-            else
-              memory_1_3    <= branch_d;
-            end if;
-          end if;
-        end process;
-        
-        
-        rd1_e           <= memory_32_0;
-        rd2_e           <= memory_32_1;
-        pc_e            <= memory_32_2;
-        immext_e        <= memory_32_3;
-        pcplus4_e       <= memory_32_4;
-
-        instr31_12_e    <= memory_20;
-
-        rs1_e           <= memory_5_0;
-        rs2_e           <= memory_5_1;
-        rd_e            <= memory_5_2;
-
-        alucontrol_e    <= memory_3;
-
-        resultsrc_e     <= memory_2_0;
-        alusrc_e        <= memory_2_1;
-
-        regwrite_e      <= memory_1_0;
-        memwrite_e      <= memory_1_1;
-        jump_e          <= memory_1_2;
-        branch_e        <= memory_1_3;
     end rtl;

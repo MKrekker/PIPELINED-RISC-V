@@ -6,54 +6,38 @@ entity data_memr is
     generic
     (
         DATA_WIDTH : natural := 32;
-        ADDR_WIDTH : natural := 10
+        ADDR_WIDTH : natural := 32
     );
     port
     (
-        clk     : in std_logic;
-        addr_a  : in std_logic_vector(ADDR_WIDTH-1 downto 0);
-        addr_b  : in std_logic_vector(ADDR_WIDTH-1 downto 0);
-        data_a  : in std_logic_vector(DATA_WIDTH-1 downto 0);
-        data_b  : in std_logic_vector(DATA_WIDTH-1 downto 0);
-        en_a    : in std_logic;
-        we_a    : in std_logic;
-        en_b    : in std_logic;
-        we_b    : in std_logic;
-        q_a     : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        q_b     : out std_logic_vector(DATA_WIDTH-1 downto 0)
+        clk             : in std_logic;
+        memwrite_m      : in std_logic;
+        rw_addr         : in std_logic_vector(ADDR_WIDTH-1 downto 0);
+        w_data          : in std_logic_vector(DATA_WIDTH-1 downto 0);
+        read_data_m     : out std_logic_vector(DATA_WIDTH-1 downto 0)
     );
 end data_memr;
 
 architecture rtl of data_memr is
-    type ram_type is array((2**ADDR_WIDTH)-1 downto 0) of std_logic_vector(DATA_WIDTH-1 downto 0);
-    shared variable ram : ram_type;
-    signal ram_data_a : std_logic_vector(DATA_WIDTH-1 downto 0) ;
-    signal ram_data_b : std_logic_vector(DATA_WIDTH-1 downto 0) ;
+    type ram_type is array((2*ADDR_WIDTH) - 1 downto 0) of std_logic_vector(DATA_WIDTH-1 downto 0);
+    signal ram : ram_type := (others => (others => '0'));
 begin
 
     process(clk)begin
-        if clk'event and clk='1' then
-            if en_a = '1' then
-                ram_data_a <= ram(to_integer(unsigned(addr_a)));
-                if we_a = '1' then
-                    ram(to_integer(unsigned(addr_a))) := data_a;
-                end if;
+        if rising_edge(clk) then
+            if memwrite_m = '1' then
+                ram(to_integer(unsigned(rw_addr(7 downto 2)))) <= w_data;
             end if;
         end if;
+        --read_data_m <= ram(to_integer(unsigned(rw_addr(ADDR_WIDTH - 1 downto 0))));
     end process;
 
-    process(clk)begin
-        if clk'event and clk='1' then
-            if en_b = '1' then
-                ram_data_b <= ram(to_integer(unsigned(addr_b)));
-                if we_b = '1' then
-                    ram(to_integer(unsigned(addr_b))) := data_b;
-                end if;
-            end if;
-        end if;
+    process(clk,rw_addr) begin
+        --if to_integer(unsigned(rw_addr(ADDR_WIDTH - 1 downto 2))) < (2*ADDR_WIDTH) then
+            read_data_m <= ram(to_integer(unsigned(rw_addr(7 downto 2))));
+       -- else
+           -- read_data_m <=(others => '0');
+        --end if;
     end process;
-
-    q_a <= ram_data_a;
-    q_b <= ram_data_b;
 
 end rtl;
